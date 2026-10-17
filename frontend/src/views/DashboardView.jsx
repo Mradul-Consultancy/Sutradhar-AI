@@ -5,7 +5,9 @@ import {
 } from "recharts";
 import {
   Wallet, Target, TrendingUp, Users, Ticket, ArrowUpRight, ArrowDownRight,
-  Phone, Mail, Calendar, Video, FileText, MessageCircle, AlertCircle, Clock, Filter
+  Phone, Mail, Calendar, Video, FileText, MessageCircle, AlertCircle, Clock, Filter,
+  Sparkles, Bot, BrainCircuit, Zap, CheckCircle2, ChevronRight, RefreshCw, Send,
+  ShieldCheck, Cpu
 } from "lucide-react";
 
 const palette = {
@@ -71,8 +73,163 @@ export default function DashboardView({ onNavigate }) {
   const [showWon, setShowWon] = useState(true);
   const [advancedOpen, setAdvancedOpen] = useState(false);
 
+  // AI Copilot & Agent States
+  const [aiDrawerOpen, setAiDrawerOpen] = useState(false);
+  const [aiPrompt, setAiPrompt] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
+  const [dealRadar, setDealRadar] = useState([]);
+  const [radarLoading, setRadarLoading] = useState(false);
+  const [voiceRecording, setVoiceRecording] = useState(false);
+  const [reviewQueue, setReviewQueue] = useState([]);
+  const [reviewLoading, setReviewLoading] = useState(false);
+  const [aiResponse, setAiResponse] = useState({
+    agent: "Sutradhar AI",
+    message: "Namaste! I am your Autonomous Revenue & Operations Orchestrator. Select a strategic action or query real-time pipeline telemetry.",
+    suggestedActions: [
+      { label: "Predictive Stall Radar (Drishti)", actionType: "predictive_radar" },
+      { label: "Summarize High-Priority Tickets (Sahayak)", actionType: "summarize_tickets" },
+      { label: "Deal Closure Probability (Kuber)", actionType: "deal_insights" },
+      { label: "Draft Strategic Enterprise Proposal", actionType: "draft_proposal" }
+    ]
+  });
+
   // Pre-configured owners list
   const owners = ["All", "Priya Nair", "Vikram Singh", "Aarav Mehta"];
+
+  const fetchReviewQueue = async () => {
+    try {
+      setReviewLoading(true);
+      const token = localStorage.getItem("crm-auth-token");
+      const res = await fetch("/api/ai/review-queue", {
+        headers: { "Authorization": token ? `Bearer ${token}` : "" }
+      });
+      if (res.ok) {
+        const json = await res.json();
+        setReviewQueue(json.items || []);
+      }
+    } catch (e) {
+      console.error("Failed to load review queue", e);
+    } finally {
+      setReviewLoading(false);
+    }
+  };
+
+  const handleApproveReview = async (itemId) => {
+    try {
+      const token = localStorage.getItem("crm-auth-token");
+      const res = await fetch(`/api/ai/review-queue/${itemId}/approve`, {
+        method: "POST",
+        headers: { "Authorization": token ? `Bearer ${token}` : "" }
+      });
+      if (res.ok) {
+        const json = await res.json();
+        setSimulatorToast({ type: "success", text: json.message });
+        setReviewQueue((prev) => prev.filter((item) => item.id !== itemId));
+        fetchAuditLogs();
+      }
+    } catch (e) {
+      console.error("Approve failed", e);
+    }
+  };
+
+  const [auditLogs, setAuditLogs] = useState([]);
+  const [auditLoading, setAuditLoading] = useState(false);
+
+  const fetchAuditLogs = async () => {
+    try {
+      setAuditLoading(true);
+      const token = localStorage.getItem("crm-auth-token");
+      const res = await fetch("/api/audit-logs", {
+        headers: { "Authorization": token ? `Bearer ${token}` : "" }
+      });
+      if (res.ok) {
+        const json = await res.json();
+        setAuditLogs(json.logs || []);
+      }
+    } catch (e) {
+      console.error("Failed to load audit logs", e);
+    } finally {
+      setAuditLoading(false);
+    }
+  };
+
+  const fetchDealRadar = async () => {
+    try {
+      setRadarLoading(true);
+      const token = localStorage.getItem("crm-auth-token");
+      const res = await fetch("/api/ai/deal-radar", {
+        headers: { "Authorization": token ? `Bearer ${token}` : "" }
+      });
+      if (res.ok) {
+        const json = await res.json();
+        setDealRadar(json.deals || []);
+      }
+    } catch (e) {
+      console.error("Deal radar error:", e);
+    } finally {
+      setRadarLoading(false);
+    }
+  };
+
+  const handleSimulateVoiceLog = async () => {
+    try {
+      setVoiceRecording(true);
+      const sampleTranscripts = [
+        "Met with VP of Engineering at TechVista. They agreed to 100 enterprise seats if we deliver SSO support this quarter. High urgency.",
+        "Discussion with CFO regarding quarterly invoicing schedule. Next step is sending updated agreement with 15% discount.",
+        "Follow up call completed with procurement. Approved proposal pending compliance signoff."
+      ];
+      const randomTranscript = sampleTranscripts[Math.floor(Math.random() * sampleTranscripts.length)];
+      const token = localStorage.getItem("crm-auth-token");
+      const res = await fetch("/api/ai/voice-log", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": token ? `Bearer ${token}` : ""
+        },
+        body: JSON.stringify({
+          transcript: randomTranscript,
+          activity_type: "Call"
+        })
+      });
+      if (res.ok) {
+        const json = await res.json();
+        setSimulatorToast({ type: "success", text: json.message });
+        fetchDashboardData(selectedOwner);
+      }
+    } catch (e) {
+      console.error("Voice log failed", e);
+    } finally {
+      setVoiceRecording(false);
+    }
+  };
+
+  const handleAskAi = async (actionType = null, customText = null) => {
+    try {
+      setAiLoading(true);
+      const token = localStorage.getItem("crm-auth-token");
+      const res = await fetch("/api/ai/copilot", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": token ? `Bearer ${token}` : ""
+        },
+        body: JSON.stringify({
+          action: actionType,
+          query: customText || aiPrompt
+        })
+      });
+      if (res.ok) {
+        const json = await res.json();
+        setAiResponse(json);
+      }
+    } catch (e) {
+      console.error("AI Copilot request error:", e);
+    } finally {
+      setAiLoading(false);
+      setAiPrompt("");
+    }
+  };
 
   useEffect(() => {
     fetchDashboardData(selectedOwner);
@@ -194,6 +351,29 @@ export default function DashboardView({ onNavigate }) {
             </select>
           </div>
           
+          {/* AI Copilot Trigger */}
+          <button
+            onClick={() => {
+              setAiDrawerOpen(!aiDrawerOpen);
+              if (!dealRadar.length) fetchDealRadar();
+            }}
+            className="flex items-center gap-2 px-4 py-1.5 bg-gradient-to-r from-teal-500 to-indigo-600 hover:from-teal-400 hover:to-indigo-500 text-white font-bold text-xs rounded-xl uppercase tracking-wider transition-all shadow-[0_0_15px_rgba(45,212,191,0.25)] active:scale-95"
+          >
+            <Sparkles size={14} className="animate-spin text-white" style={{ animationDuration: '4s' }} />
+            <span>AI Copilot</span>
+          </button>
+
+          {/* Phase 1 Voice Note Trigger */}
+          <button
+            onClick={handleSimulateVoiceLog}
+            disabled={voiceRecording}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-brand-teal/40 bg-brand-surfaceAlt hover:bg-brand-teal/10 text-brand-teal text-xs font-mono transition-all disabled:opacity-50"
+            title="Simulate Voice Note auto-transcription and activity logging"
+          >
+            <Zap size={13} className={voiceRecording ? "animate-bounce" : ""} />
+            <span>{voiceRecording ? "Transcribing..." : "Voice Log (AI)"}</span>
+          </button>
+
           {/* WhatsApp Simulator trigger */}
           <button
             onClick={handleTriggerSimulator}
@@ -211,6 +391,221 @@ export default function DashboardView({ onNavigate }) {
           </div>
         </div>
       </div>
+
+      {/* AI Copilot Interactive Banner / Drawer */}
+      {aiDrawerOpen && (
+        <div className="rounded-2xl border border-brand-teal/40 bg-brand-surface/90 backdrop-blur-xl p-5 shadow-[0_0_30px_rgba(45,212,191,0.08)] transition-all animate-fadeIn">
+          <div className="flex items-center justify-between border-b border-brand-border/60 pb-3 mb-4">
+            <div className="flex items-center gap-2.5">
+              <div className="p-2 rounded-xl bg-gradient-to-br from-teal-500/20 to-indigo-500/20 border border-brand-teal/40 text-brand-teal">
+                <BrainCircuit size={18} />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-sm font-bold text-brand-text tracking-wide font-space">{aiResponse.agent}</h3>
+                  <span className="text-[9px] font-mono px-2 py-0.5 rounded-full bg-brand-teal/20 text-brand-teal border border-brand-teal/30">ACTIVE LOOP</span>
+                </div>
+                <p className="text-[11px] text-brand-textDim">Autonomous Multi-Agent Revenue &amp; SLA Copilot</p>
+              </div>
+            </div>
+            <button
+              onClick={() => setAiDrawerOpen(false)}
+              className="text-brand-textDim hover:text-brand-text text-sm p-1 rounded-lg border border-brand-border/50 hover:bg-brand-surfaceAlt"
+            >
+              ✕
+            </button>
+          </div>
+
+          <div className="bg-brand-surfaceAlt/70 rounded-xl p-4 border border-brand-border/80 mb-4">
+            <div className="flex items-start gap-3">
+              <Bot size={18} className="text-brand-teal mt-0.5 shrink-0" />
+              <div className="text-xs text-brand-text leading-relaxed font-sans">
+                {aiResponse.message}
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Action Chips */}
+          <div className="flex flex-wrap gap-2 mb-4">
+            {aiResponse.suggestedActions?.map((act, idx) => (
+              <button
+                key={idx}
+                onClick={() => handleAskAi(act.actionType, act.label)}
+                disabled={aiLoading}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-brand-border bg-brand-surface hover:border-brand-teal/40 hover:bg-brand-teal/10 text-[11px] text-brand-textDim hover:text-brand-teal transition-all"
+              >
+                <Zap size={11} className="text-brand-teal" />
+                <span>{act.label}</span>
+              </button>
+            ))}
+          </div>
+
+          {/* Prompt Input Form */}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (aiPrompt.trim()) handleAskAi(null, aiPrompt);
+            }}
+            className="flex items-center gap-2"
+          >
+            <input
+              type="text"
+              value={aiPrompt}
+              onChange={(e) => setAiPrompt(e.target.value)}
+              placeholder="Ask Sutradhar Agents (e.g., 'Summarize high-priority tickets' or 'Forecast Tata deal')..."
+              className="flex-1 bg-brand-surfaceAlt border border-brand-border rounded-xl px-4 py-2.5 text-xs text-brand-text placeholder-brand-textDim/60 focus:outline-none focus:border-brand-teal transition-colors"
+            />
+            <button
+              type="submit"
+              disabled={aiLoading || !aiPrompt.trim()}
+              className="flex items-center gap-1.5 px-4 py-2.5 bg-brand-teal hover:bg-brand-teal/90 text-brand-bg font-bold text-xs rounded-xl uppercase tracking-wider transition-all disabled:opacity-50"
+            >
+              {aiLoading ? <RefreshCw size={14} className="animate-spin" /> : <Send size={14} />}
+              <span>Dispatch</span>
+            </button>
+          </form>
+
+          {/* Phase 2: Predictive Deal Health Radar */}
+          <div className="mt-4 pt-4 border-t border-brand-border/60">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <Target size={13} className="text-brand-teal" />
+                <span className="text-[10px] font-mono uppercase tracking-wider text-brand-textDim font-bold">
+                  Predictive Deal Risk Radar (Drishti Model)
+                </span>
+              </div>
+              <button
+                onClick={fetchDealRadar}
+                disabled={radarLoading}
+                className="text-[10px] font-mono text-brand-teal hover:underline flex items-center gap-1"
+              >
+                <RefreshCw size={10} className={radarLoading ? "animate-spin" : ""} />
+                <span>Re-score Pipeline</span>
+              </button>
+            </div>
+
+            {dealRadar.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-48 overflow-y-auto pr-1">
+                {dealRadar.slice(0, 4).map((d) => (
+                  <div key={d.id} className="p-2.5 rounded-xl border border-brand-border bg-brand-surfaceAlt/60 flex items-center justify-between text-xs">
+                    <div className="truncate mr-2">
+                      <p className="font-semibold text-brand-text truncate">{d.title}</p>
+                      <p className="text-[10px] text-brand-textDim">{d.stage} • {d.days_open}d active</p>
+                    </div>
+                    <div className="text-right shrink-0">
+                      <span className={`px-2 py-0.5 rounded text-[9px] font-mono font-bold ${
+                        d.health === 'Critical' ? 'bg-brand-red/20 text-brand-red border border-brand-red/30' :
+                        d.health === 'Warning' ? 'bg-brand-warn/20 text-brand-warn border border-brand-warn/30' :
+                        'bg-brand-teal/20 text-brand-teal border border-brand-teal/30'
+                      }`}>
+                        {d.health} ({d.winProbability}%)
+                      </span>
+                      <p className="text-[10px] font-mono text-brand-textDim mt-0.5">₹{(d.value || 0).toLocaleString()}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-[11px] text-brand-textDim italic">Click "Re-score Pipeline" to evaluate dynamic win/loss matrices.</p>
+            )}
+          </div>
+
+          {/* Phase 3: Autonomous Follow-Up Review Queue (Human-In-The-Loop) */}
+          <div className="mt-4 pt-4 border-t border-brand-border/60">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 size={13} className="text-brand-indigo" />
+                <span className="text-[10px] font-mono uppercase tracking-wider text-brand-textDim font-bold">
+                  Human-In-The-Loop Autonomous Dispatch Queue
+                </span>
+              </div>
+              <button
+                onClick={fetchReviewQueue}
+                disabled={reviewLoading}
+                className="text-[10px] font-mono text-brand-indigo hover:underline flex items-center gap-1"
+              >
+                <RefreshCw size={10} className={reviewLoading ? "animate-spin" : ""} />
+                <span>Load Staged Actions</span>
+              </button>
+            </div>
+
+            {reviewQueue.length > 0 ? (
+              <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+                {reviewQueue.map((item) => (
+                  <div key={item.id} className="p-2.5 rounded-xl border border-brand-border bg-brand-surfaceAlt/60 flex items-center justify-between text-xs gap-3">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-brand-indigo/20 text-brand-indigo font-bold">{item.agent}</span>
+                        <span className="font-semibold text-brand-text truncate">{item.recipient}</span>
+                      </div>
+                      <p className="text-[11px] text-brand-textDim mt-0.5">{item.proposed_action}</p>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="text-[10px] font-mono text-brand-teal">{item.confidence_score}% Conf.</span>
+                      <button
+                        onClick={() => handleApproveReview(item.id)}
+                        className="px-2.5 py-1 bg-brand-teal text-brand-bg font-bold text-[10px] rounded-lg hover:opacity-90 transition-opacity"
+                      >
+                        Approve &amp; Send
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-[11px] text-brand-textDim italic">Click "Load Staged Actions" to review agent-recommended customer outreach.</p>
+            )}
+          </div>
+
+          {/* Phase 4: Enterprise Hardening & Local AI Status */}
+          <div className="mt-4 pt-4 border-t border-brand-border/60">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <ShieldCheck size={13} className="text-brand-teal" />
+                <span className="text-[10px] font-mono uppercase tracking-wider text-brand-textDim font-bold">
+                  Enterprise Hardening &amp; Compliance Audit Trail (SOC2 / GDPR)
+                </span>
+              </div>
+              <button
+                onClick={fetchAuditLogs}
+                disabled={auditLoading}
+                className="text-[10px] font-mono text-brand-teal hover:underline flex items-center gap-1"
+              >
+                <RefreshCw size={10} className={auditLoading ? "animate-spin" : ""} />
+                <span>Fetch Tamper-Proof Logs</span>
+              </button>
+            </div>
+
+            <div className="p-2.5 rounded-xl border border-brand-border bg-brand-surfaceAlt/60 mb-2 flex items-center justify-between text-xs">
+              <div className="flex items-center gap-2">
+                <Cpu size={14} className="text-brand-indigo" />
+                <div>
+                  <span className="font-semibold text-brand-text">Local Air-Gapped AI Engine</span>
+                  <p className="text-[10px] text-brand-textDim">Provider: Ollama (mistral:instruct) • Zero Data Egress</p>
+                </div>
+              </div>
+              <span className="px-2 py-0.5 rounded text-[9px] font-mono font-bold bg-brand-teal/20 text-brand-teal border border-brand-teal/30">
+                100% PRIVATE
+              </span>
+            </div>
+
+            {auditLogs.length > 0 ? (
+              <div className="space-y-1.5 max-h-36 overflow-y-auto pr-1">
+                {auditLogs.slice(0, 3).map((log) => (
+                  <div key={log.id} className="p-2 rounded-lg border border-brand-border/60 bg-brand-surface/80 flex items-center justify-between text-[11px] font-mono">
+                    <span className="text-brand-textDim">{log.timestamp.slice(11, 19)}</span>
+                    <span className="text-brand-indigo font-bold">{log.actor}</span>
+                    <span className="text-brand-text truncate max-w-[240px]">{log.action}</span>
+                    <span className="text-brand-teal">{log.ip_address}</span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-[11px] text-brand-textDim italic">Click "Fetch Tamper-Proof Logs" to audit system operations.</p>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* KPI Row */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Plus, Search, Edit2, Trash2, X, Building, Globe, Users, User, AlertCircle } from "lucide-react";
+import { Plus, Search, Edit2, Trash2, X, Building, Globe, Users, User, AlertCircle, Sparkles, BrainCircuit } from "lucide-react";
 
 const palette = {
   bg: "#0A0E1A",
@@ -26,6 +26,8 @@ export default function CompaniesView({ initialSearchQuery = "" }) {
   // Modals & form state
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingCompany, setEditingCompany] = useState(null);
+  const [enrichingCompanyId, setEnrichingCompanyId] = useState(null);
+  const [enrichmentToast, setEnrichmentToast] = useState(null);
 
   const [formName, setFormName] = useState("");
   const [formIndustry, setFormIndustry] = useState("");
@@ -42,6 +44,34 @@ export default function CompaniesView({ initialSearchQuery = "" }) {
   useEffect(() => {
     setSearchQuery(initialSearchQuery);
   }, [initialSearchQuery]);
+
+  const handleEnrichCompany = async (company) => {
+    try {
+      setEnrichingCompanyId(company.id);
+      const token = localStorage.getItem("crm-auth-token");
+      const res = await fetch("/api/ai/enrich-company", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": token ? `Bearer ${token}` : ""
+        },
+        body: JSON.stringify({
+          company_id: company.id,
+          company_name: company.company_name
+        })
+      });
+      if (res.ok) {
+        const json = await res.json();
+        setEnrichmentToast(json.message);
+        fetchData();
+        setTimeout(() => setEnrichmentToast(null), 4000);
+      }
+    } catch (e) {
+      console.error("Enrichment failed", e);
+    } finally {
+      setEnrichingCompanyId(null);
+    }
+  };
 
   const fetchData = async () => {
     try {
@@ -165,6 +195,15 @@ export default function CompaniesView({ initialSearchQuery = "" }) {
 
   return (
     <div className="space-y-6 animate-fadeIn">
+      {enrichmentToast && (
+        <div className="p-3 rounded-xl border border-brand-teal/40 bg-brand-surfaceAlt flex items-center justify-between text-xs font-mono text-brand-teal shadow-lg">
+          <div className="flex items-center gap-2">
+            <Sparkles size={14} className="animate-spin" />
+            <span>{enrichmentToast}</span>
+          </div>
+          <button onClick={() => setEnrichmentToast(null)} className="text-brand-textDim hover:text-brand-text">✕</button>
+        </div>
+      )}
       {/* Title + Action */}
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div>
@@ -256,6 +295,15 @@ export default function CompaniesView({ initialSearchQuery = "" }) {
                     <td className="p-4 text-brand-text">{c.account_owner || <span className="text-brand-textDim italic">-</span>}</td>
                     <td className="p-4 text-right">
                       <div className="flex items-center justify-end gap-2">
+                        <button
+                          onClick={() => handleEnrichCompany(c)}
+                          disabled={enrichingCompanyId === c.id}
+                          className="flex items-center gap-1 px-2 py-0.5 rounded border border-brand-teal/30 bg-brand-teal/10 hover:bg-brand-teal/20 text-brand-teal text-[10px] font-mono transition-all disabled:opacity-50"
+                          title="Enrich company with headcount, tech stack, and corporate intel"
+                        >
+                          <Sparkles size={11} className={enrichingCompanyId === c.id ? "animate-spin" : ""} />
+                          <span>{enrichingCompanyId === c.id ? "Enriching..." : "Auto-Enrich"}</span>
+                        </button>
                         <button 
                           onClick={() => handleOpenEdit(c)}
                           className="p-1 hover:text-brand-teal text-brand-textDim transition-colors"

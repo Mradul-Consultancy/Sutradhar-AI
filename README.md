@@ -1,10 +1,10 @@
 <p align="center">
-  <img src="frontend/public/logo_icon.png" alt="Apex CRM Logo" width="120" height="120" />
+  <img src="frontend/public/logo_icon.png" alt="Sutradhar AI Logo" width="120" height="120" />
 </p>
 
-<h1 align="center">Apex CRM</h1>
+<h1 align="center">Sutradhar AI</h1>
 <p align="center">
-  <strong>Self-Hosted Command Center for Customer Relationships</strong>
+  <strong>Self-Hosted Autonomous Multi-Agent Command Center for Customer Relationships</strong>
 </p>
 
 <p align="center">
@@ -145,43 +145,41 @@ Live KPI dashboard with interactive **Recharts** visualizations showing:
 
 ---
 
-## 🏗 Architecture
+---
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                        CLIENT LAYER                             │
-│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────────┐   │
-│  │  Web PWA │  │ Android  │  │  Mobile  │  │   Desktop    │   │
-│  │ (Vite)   │  │  (APK)   │  │  Browser │  │   Browser    │   │
-│  └────┬─────┘  └────┬─────┘  └────┬─────┘  └──────┬───────┘   │
-│       └──────────────┴─────────────┴───────────────┘           │
-│                         React 19 + Recharts                     │
-│                     Glassmorphic Dark Theme UI                  │
-└─────────────────────────────┬───────────────────────────────────┘
-                              │ REST API (JSON)
-                              │ JWT Authentication
-┌─────────────────────────────┴───────────────────────────────────┐
-│                        SERVER LAYER                             │
-│  ┌──────────────────────────────────────────────────────────┐  │
-│  │              Express.js (Node.js)                         │  │
-│  │  ┌────────┐ ┌──────────┐ ┌────────┐ ┌───────────────┐   │  │
-│  │  │ Auth   │ │ REST API │ │ Search │ │ Notifications │   │  │
-│  │  │ (JWT)  │ │ (CRUD)   │ │ Engine │ │  Aggregator   │   │  │
-│  │  └────────┘ └──────────┘ └────────┘ └───────────────┘   │  │
-│  └──────────────────────┬───────────────────────────────────┘  │
-│                         │                                       │
-│  ┌──────────────────────┴───────────────────────────────────┐  │
-│  │                   SQLite 3 Database                       │  │
-│  │  ┌──────────┐ ┌──────┐ ┌──────┐ ┌──────────┐ ┌───────┐  │  │
-│  │  │Companies │ │Deals │ │Users │ │Activities│ │Tickets│  │  │
-│  │  └────┬─────┘ └──┬───┘ └──────┘ └────┬─────┘ └───┬───┘  │  │
-│  │       │          │                    │           │       │  │
-│  │  ┌────┴──────────┴────────────────────┴───────────┘       │  │
-│  │  │              Contacts (Central Entity)                 │  │
-│  │  └────────────────────────────────────────────────────────│  │
-│  │            PRAGMA foreign_keys = ON (Cascading)           │  │
-│  └──────────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────────┘
+## 🏗 High-Level Architecture & Agentic Loop
+
+```mermaid
+graph TD
+    subgraph ClientLayer ["1. Client Interaction Layer (React 19 + Glassmorphism)"]
+        PWA["Web PWA / Desktop"]
+        AndroidApp["Android Native (Capacitor 8)"]
+        AICopilot["AI Copilot Drawer & Voice Command"]
+    end
+
+    subgraph AgentOrchestration ["2. Agentic Loop & Orchestration Hub"]
+        LoopEngine["Loop Engine (OODA: Observe - Orient - Decide - Act)"]
+        Sutradhar["Sutradhar: Lead Qualifier & Proposal Agent"]
+        Kuber["Kuber: Revenue Strategist & Churn Predictor"]
+        Sahayak["Sahayak: Ticket SLA & Resolution Specialist"]
+        Drishti["Drishti: BI Forecast & Anomaly Radar"]
+    end
+
+    subgraph ServiceLayer ["3. Backend & Services (Node.js + Express)"]
+        AuthModule["JWT Auth & Security"]
+        OmniSearch["Omni-Channel Search Engine (Ctrl+K)"]
+        WhatsAppSink["WhatsApp & Webhook Listener"]
+        RESTEndpoints["CRUD Controllers & Telemetry"]
+    end
+
+    subgraph DataLayer ["4. Sovereign Storage & Vector Memory"]
+        SQLiteDB[("SQLite 3 (Local Sovereign DB)")]
+        LocalEmbeddings[("Vector Embeddings / Memory Cache")]
+    end
+
+    ClientLayer --> AgentOrchestration
+    AgentOrchestration --> ServiceLayer
+    ServiceLayer --> DataLayer
 ```
 
 ### Tech Stack

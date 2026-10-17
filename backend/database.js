@@ -170,6 +170,32 @@ async function initDatabase() {
       )
     `);
 
+    // 7. Phase 4: Create Audit Logs table (SOC2 / GDPR compliance)
+    await run(`
+      CREATE TABLE IF NOT EXISTS audit_logs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        timestamp TEXT NOT NULL,
+        actor TEXT NOT NULL,
+        action TEXT NOT NULL,
+        resource_type TEXT NOT NULL,
+        resource_id TEXT,
+        metadata TEXT,
+        ip_address TEXT
+      )
+    `);
+
+    // 8. Phase 4: Create AI Inference Configuration table (Ollama / Local LLM / Cloud)
+    await run(`
+      CREATE TABLE IF NOT EXISTS ai_configs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        provider TEXT NOT NULL DEFAULT 'local_heuristic',
+        endpoint TEXT DEFAULT 'http://localhost:11434',
+        model_name TEXT DEFAULT 'mistral:instruct',
+        api_key TEXT,
+        is_airgapped INTEGER NOT NULL DEFAULT 1
+      )
+    `);
+
     console.log('Database tables verified/created successfully.');
 
     // Seed database if empty

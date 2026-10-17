@@ -495,7 +495,7 @@ export default function App() {
         <div className="flex flex-col">
           <div className="flex items-center gap-2">
             <div className="w-2.5 h-2.5 rounded-full bg-[#2DD4BF] pulse-dot" />
-            <span className="font-space font-bold tracking-tight text-sm uppercase">Apex CRM</span>
+            <span className="font-space font-bold tracking-tight text-sm uppercase">Sutradhar AI</span>
           </div>
           {role && (
             <span className={`text-[8px] font-mono font-bold uppercase tracking-wide mt-0.5 align-middle self-start px-1.5 py-0.5 rounded border ${
@@ -581,8 +581,8 @@ export default function App() {
           <div className="flex items-center gap-2.5">
             <div className="w-3.5 h-3.5 rounded-full bg-[#2DD4BF] pulse-dot" />
             <div>
-              <h1 className="font-space font-bold text-md tracking-tight uppercase">Apex CRM</h1>
-              <p className="text-[9px] text-[#7C8AA8] font-mono tracking-widest mt-0.5">LOCAL HOST COMMAND</p>
+              <h1 className="font-space font-bold text-md tracking-tight uppercase">Sutradhar AI</h1>
+              <p className="text-[9px] text-[#7C8AA8] font-mono tracking-widest mt-0.5">AUTONOMOUS COMMAND</p>
             </div>
           </div>
           {role && (
