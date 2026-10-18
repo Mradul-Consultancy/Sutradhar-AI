@@ -4,7 +4,7 @@
 
 <h1 align="center">Sutradhar AI</h1>
 <p align="center">
-  <strong>Self-Hosted Autonomous Multi-Agent Command Center for Customer Relationships</strong>
+  <strong>Self-Hosted Autonomous Multi-Agent Revenue Command Center</strong>
 </p>
 
 <p align="center">
@@ -24,18 +24,29 @@
 </p>
 
 <p align="center">
-  A premium, glassmorphic dark-theme CRM platform engineered for businesses that demand<br/>
-  <strong>100% data sovereignty</strong>, <strong>zero SaaS fees</strong>, and <strong>offline-first capabilities</strong>.
+  A premium, glassmorphic dark-theme <strong>AI-powered CRM & Revenue Command Center</strong> engineered for businesses that demand<br/>
+  <strong>100% data sovereignty</strong>, <strong>zero SaaS fees</strong>, <strong>autonomous AI agents</strong>, and <strong>offline-first capabilities</strong>.
 </p>
+
+---
+
+## 📸 Dashboard Overview
+
+<p align="center">
+  <img src="docs/images/dashboard_overview.jpg" alt="Sutradhar AI Dashboard Overview" width="100%" />
+</p>
+
+> The dashboard features a premium **glassmorphic dark theme** with an HSL-tuned color palette, live KPI cards, Revenue Forecast charts, AI Copilot drawer, Deal Risk Radar, and Advanced Analytics — all in real-time.
 
 ---
 
 ## 📋 Table of Contents
 
-- [Why Apex CRM?](#-why-apex-crm)
+- [Why Sutradhar AI?](#-why-sutradhar-ai)
 - [Features](#-features)
-- [Screenshots](#-screenshots)
-- [Architecture](#-architecture)
+- [AI Agents & Autonomous Loop](#-ai-agents--autonomous-loop)
+- [Screenshots](#-dashboard-overview)
+- [Architecture](#-high-level-architecture--agentic-loop)
 - [Quick Start](#-quick-start)
 - [Project Structure](#-project-structure)
 - [API Reference](#-api-reference)
@@ -48,15 +59,17 @@
 
 ---
 
-## 🎯 Why Apex CRM?
+## 🎯 Why Sutradhar AI?
 
-| Challenge | Apex CRM Solution |
-|-----------|---------------------|
+| Challenge | Sutradhar AI Solution |
+|-----------|----------------------|
 | **Expensive SaaS subscriptions** (Salesforce, HubSpot, Zoho) | Zero recurring fees — own your platform forever |
 | **Data stored on third-party servers** | 100% self-hosted — your data never leaves your infrastructure |
 | **Vendor lock-in & export limitations** | Single portable SQLite file + CSV export for any table |
 | **No offline access** | PWA + Android APK with offline-first architecture |
 | **Complex setup & maintenance** | One command to install, one command to run |
+| **No AI built in** | Autonomous multi-agent system with Lead Scoring, Revenue Forecasting, Deal Radar & AI Copilot |
+| **Generic dashboards** | Premium glassmorphic dark-theme Revenue Command Center with live telemetry |
 
 ---
 
@@ -71,6 +84,15 @@ Live KPI dashboard with interactive **Recharts** visualizations showing:
 - Monthly Revenue Trends (Area Charts)
 - Deal Stage Distribution (Pie Charts)
 - Activity Timeline with Type Breakdown
+
+### 🤖 AI-Powered Intelligence (NEW)
+- **Lead Scoring Engine** — `POST /api/lead/score` evaluates leads with a weighted scoring model
+- **Revenue Forecasting** — `GET /api/revenue/forecast` provides 6-month revenue predictions (plug-in-ready for ML models)
+- **Predictive Deal Risk Radar (Drishti)** — Real-time deal health monitoring with win-probability scores
+- **AI Copilot Drawer** — Conversational interface to query pipeline telemetry and get AI recommendations
+- **Human-In-The-Loop Review Queue** — Agents propose actions; users approve & dispatch
+- **Voice-Log AI** — Auto-transcribe simulated calls and create activity records
+- **Audit-Proof Logging** — Tamper-proof enterprise audit trail (SOC2/GDPR ready)
 
 ### 👥 Contact Management
 - Full CRUD with inline editing and detail panels
@@ -131,19 +153,37 @@ Live KPI dashboard with interactive **Recharts** visualizations showing:
 
 ---
 
-## 📸 Screenshots
+## 🧠 AI Agents & Autonomous Loop
 
-> The app features a premium **glassmorphic dark theme** with an HSL-tuned color palette, smooth micro-animations, and hardware-accelerated transitions.
+Sutradhar AI operates on an **OODA (Observe-Orient-Decide-Act)** autonomous feedback loop with four specialized agents:
 
-| Dashboard | Pipeline Kanban |
-|-----------|----------------|
-| Live KPIs, revenue charts, activity timeline | Drag-and-drop deal stages |
+| Agent | Role | Capabilities |
+|-------|------|-------------|
+| **Sutradhar** | Lead Qualifier & Proposal Agent | Scores leads, drafts enterprise proposals, qualifies contacts |
+| **Kuber** | Revenue Strategist & Churn Predictor | Deal closure probability, revenue forecasting, churn analysis |
+| **Sahayak** | Ticket SLA & Resolution Specialist | Summarizes high-priority tickets, monitors SLA compliance |
+| **Drishti** | BI Forecast & Anomaly Radar | Predictive deal risk radar, pipeline anomaly detection |
 
-| Contacts | Tickets |
-|----------|---------|
-| Full CRM contact cards with detail panels | Priority-based ticket queue with SLA tracking |
+### How It Works
 
----
+```
+┌─────────────────────────────────────────────┐
+│  OBSERVE  │  Agents scan pipeline, tickets,  │
+│           │  deals, and activities in real-   │
+│           │  time from SQLite                 │
+├───────────┼──────────────────────────────────┤
+│  ORIENT   │  Score leads, calculate risk,     │
+│           │  identify stalled deals           │
+├───────────┼──────────────────────────────────┤
+│  DECIDE   │  Propose actions: follow-up       │
+│           │  emails, escalations, discounts   │
+├───────────┼──────────────────────────────────┤
+│  ACT      │  Human approves → system          │
+│           │  dispatches (WhatsApp, Email)      │
+└─────────────────────────────────────────────┘
+```
+
+> **Human-In-The-Loop**: All agent recommendations are staged in the Review Queue. Nothing is dispatched without explicit user approval.
 
 ---
 
@@ -170,6 +210,8 @@ graph TD
         OmniSearch["Omni-Channel Search Engine (Ctrl+K)"]
         WhatsAppSink["WhatsApp & Webhook Listener"]
         RESTEndpoints["CRUD Controllers & Telemetry"]
+        LeadScoring["Lead Scoring Service"]
+        Forecasting["Revenue Forecasting Service"]
     end
 
     subgraph DataLayer ["4. Sovereign Storage & Vector Memory"]
@@ -188,6 +230,7 @@ graph TD
 |-------|-----------|---------|
 | **Frontend** | React 19, Vite 8, Recharts, Lucide Icons, TailwindCSS | UI components, charts, icons, styling |
 | **Backend** | Node.js, Express 4, JWT | REST API server, authentication |
+| **AI Services** | Lead Scoring, Revenue Forecasting, Deal Radar | Plug-in-ready stubs for ML/LLM models |
 | **Database** | SQLite 3 with Foreign Keys | Relational data storage (single-file, portable) |
 | **Mobile** | Capacitor 8, Android SDK | Native Android APK wrapper |
 | **PWA** | Service Worker, Web Manifest | Installable web app with offline support |
@@ -208,8 +251,8 @@ graph TD
 ### 1. Clone & Install
 
 ```bash
-git clone https://github.com/your-username/apex-crm.git
-cd apex-crm
+git clone https://github.com/Mradul-Consultancy/Sutradhar-AI.git
+cd Sutradhar-AI
 npm run install:all
 ```
 
@@ -219,34 +262,31 @@ npm run install:all
 npm run dev
 ```
 
-This starts both servers concurrently:
+This starts both:
+- **Vite dev server** → `http://localhost:5173` (frontend)
+- **Express API** → `http://localhost:3000/api` (backend)
 
-| Service | URL | Description |
-|---------|-----|-------------|
-| 🌐 Frontend | [http://localhost:5173](http://localhost:5173) | React app (Vite dev server) |
-| ⚙️ Backend | [http://localhost:3000](http://localhost:3000) | Express REST API |
+### 3. Default Login
 
-### 3. Login
+```
+Username: admin
+Password: admin123
+```
 
-| Username | Password | Role |
-|----------|----------|------|
-| `admin` | `admin` | Admin (full access) |
-| `agent` | `agent` | Agent (sales ops) |
-| `support` | `support` | Support (ticket management) |
-
-> **Note:** Default credentials are created during initial database seeding. Change them using the `set_admin_password.js` utility.
+> ⚠️ Change the default password immediately for production use.
 
 ---
 
 ## 📂 Project Structure
 
 ```
-apex-crm/
-├── 📁 backend/                    # Express + SQLite API server
-│   ├── server.js                  # Express app bootstrap, CORS, port binding
-│   ├── routes.js                  # All REST API endpoints (776 lines)
-│   ├── companyRoutes.js           # Company-specific CRUD sub-router
-│   ├── database.js                # SQLite connection, schema init, seed data
+Sutradhar-AI/
+├── 📁 backend/                    # Express.js API server
+│   ├── server.js                  # Express app setup, middleware, route mounting
+│   ├── routes.js                  # All REST API route handlers
+│   ├── 📁 services/               # AI service modules
+│   │   ├── leadScoring.js         # Lead scoring engine (weighted model)
+│   │   └── forecasting.js        # Revenue forecasting service (6-month)
 │   ├── auth.js                    # JWT token verification middleware
 │   ├── .env                       # Environment variables (JWT secret, ports)
 │   ├── reset_db.js                # Database reset utility script
@@ -260,14 +300,20 @@ apex-crm/
 │   │   ├── App.css                # Global styles & glassmorphic theme
 │   │   ├── index.css              # Base CSS resets
 │   │   ├── main.jsx               # React mount point & SW registration
-│   │   └── 📁 views/
-│   │       ├── LoginView.jsx      # Authentication form
-│   │       ├── DashboardView.jsx  # KPI cards, charts, activity feed
-│   │       ├── ContactsView.jsx   # Contact CRUD, import/export, details
-│   │       ├── CompaniesView.jsx  # Company management
-│   │       ├── PipelineView.jsx   # Kanban board & deal table
-│   │       ├── ActivitiesView.jsx # Activity log & scheduling
-│   │       └── TicketsView.jsx    # Support ticket queue
+│   │   ├── 📁 views/
+│   │   │   ├── LoginView.jsx      # Authentication form
+│   │   │   ├── DashboardView.jsx  # Revenue Command Center (KPIs, AI, charts)
+│   │   │   ├── ContactsView.jsx   # Contact CRUD, import/export, details
+│   │   │   ├── CompaniesView.jsx  # Company management
+│   │   │   ├── PipelineView.jsx   # Kanban board & deal table
+│   │   │   ├── ActivitiesView.jsx # Activity log & scheduling
+│   │   │   └── TicketsView.jsx    # Support ticket queue
+│   │   ├── 📁 components/
+│   │   │   ├── LeadScoreCard.jsx  # AI Lead Score display widget
+│   │   │   └── RevenueForecastChart.jsx # Recharts revenue forecast area chart
+│   │   └── 📁 hooks/
+│   │       ├── useLeadScore.js    # Custom hook for lead scoring API
+│   │       └── useRevenueForecast.js # Custom hook for revenue forecast API
 │   ├── 📁 public/
 │   │   ├── manifest.json          # PWA web manifest
 │   │   ├── sw.js                  # Service worker for PWA
@@ -284,8 +330,13 @@ apex-crm/
 │   ├── gradlew / gradlew.bat      # Gradle wrapper scripts
 │   └── ...                        # Standard Android project files
 │
+├── 📁 docs/
+│   └── 📁 images/                 # Documentation images & screenshots
+│       └── dashboard_overview.jpg # Dashboard overview screenshot
+│
 ├── capacitor.config.json          # Capacitor configuration
 ├── build_and_deploy.ps1           # One-click build & deploy automation
+├── UPGRADE_LOOP_ENGINEERING.md    # OODA autonomous agentic loop documentation
 ├── package.json                   # Root workspace orchestrator
 └── README.md                      # This file
 ```
@@ -351,6 +402,20 @@ All endpoints are prefixed with `/api` and require JWT authentication (except lo
 | `PUT` | `/api/tickets/:id` | Update ticket |
 | `DELETE` | `/api/tickets/:id` | Delete ticket |
 
+### AI & Intelligence Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/lead/score` | Evaluate a lead and return weighted score |
+| `GET` | `/api/revenue/forecast` | 6-month revenue forecast array |
+| `POST` | `/api/ai/copilot` | Conversational AI — accepts `action` or free-text `query` |
+| `GET` | `/api/ai/deal-radar` | Live deal-risk scores (Drishti model) |
+| `GET` | `/api/ai/review-queue` | List of pending AI-suggested actions |
+| `POST` | `/api/ai/review-queue/:id/approve` | Approve & dispatch a suggested action |
+| `GET` | `/api/audit-logs` | Tamper-proof audit log entries |
+| `POST` | `/api/simulator/whatsapp` | Triggers mock WhatsApp outbound flow |
+| `POST` | `/api/ai/voice-log` | Accepts transcribed call, creates activity record |
+
 ### Utility
 
 | Method | Endpoint | Description |
@@ -358,7 +423,6 @@ All endpoints are prefixed with `/api` and require JWT authentication (except lo
 | `GET` | `/api/dashboard` | Aggregated KPI metrics & chart data |
 | `GET` | `/api/search?q=` | Global search across all entities |
 | `GET` | `/api/notifications` | Overdue tasks, today's activities, urgent tickets |
-| `POST` | `/api/simulator/whatsapp` | WhatsApp webhook simulator |
 
 ---
 
@@ -459,7 +523,7 @@ SEED_MOCK_DATA=true
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `PORT` | `3000` | Backend server port |
-| `JWT_SECRET` | `apex_crm_super_secret_key_2026` | Secret key for JWT token signing |
+| `JWT_SECRET` | `sutradhar_ai_secret_key_2026` | Secret key for JWT token signing |
 | `SEED_MOCK_DATA` | `true` | Set to `false` to skip demo data seeding |
 | `NODE_ENV` | `development` | Set to `production` for production deployment |
 
@@ -467,7 +531,7 @@ SEED_MOCK_DATA=true
 
 ## 🗄️ Database Schema
 
-Apex CRM uses a relational SQLite database with foreign key constraints enabled (`PRAGMA foreign_keys = ON`).
+Sutradhar AI uses a relational SQLite database with foreign key constraints enabled (`PRAGMA foreign_keys = ON`).
 
 ```mermaid
 erDiagram
@@ -555,24 +619,29 @@ erDiagram
 ### v1.1 — Enhanced Security
 - [ ] Role-Based Access Control (RBAC) with granular permissions
 - [ ] JWT refresh tokens with sliding expiration
-- [ ] Audit log for all data mutations
+- [x] Audit log for all data mutations ✅ (Implemented)
 
 ### v1.2 — Integrations
 - [ ] Live Twilio / Meta WhatsApp Cloud API connector
 - [ ] Email integration (SMTP send + IMAP receive)
 - [ ] Calendar sync (Google Calendar / Outlook)
 
-### v2.0 — Scale
+### v2.0 — Scale & AI
 - [ ] PostgreSQL migration for cloud-scale deployments
 - [ ] Docker & Docker Compose packaging
 - [ ] Multi-tenant support with team workspaces
 - [ ] Real-time updates via WebSockets
-
-### v2.1 — Intelligence
-- [ ] AI-powered lead scoring
+- [x] AI-powered lead scoring ✅ (Implemented)
+- [x] Predictive deal closure forecasting ✅ (Implemented)
+- [x] Revenue forecasting ✅ (Implemented)
 - [ ] Automated email sequence builder
-- [ ] Predictive deal closure forecasting
-- [ ] Natural language search
+- [ ] Natural language search with embeddings
+
+### v2.1 — Enterprise
+- [ ] Ollama / OpenAI LLM integration for real AI inference
+- [ ] SSO (SAML / OAuth2) authentication
+- [ ] Granular data encryption at rest
+- [ ] Multi-region deployment support
 
 ---
 
@@ -602,7 +671,7 @@ This project is licensed under the **MIT License** — see the [LICENSE](LICENSE
 ```
 MIT License
 
-Copyright (c) 2026 Apex CRM
+Copyright (c) 2026 Mradul Consultancy — Sutradhar AI
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -618,7 +687,7 @@ copies or substantial portions of the Software.
 ---
 
 <p align="center">
-  <strong>Built with ❤️ by the Apex CRM Team</strong>
+  <strong>Built with ❤️ by Mradul Consultancy — Sutradhar AI Team</strong>
   <br/>
   <sub>If you found this project useful, please consider giving it a ⭐</sub>
 </p>
