@@ -9,6 +9,8 @@ import {
   Sparkles, Bot, BrainCircuit, Zap, CheckCircle2, ChevronRight, RefreshCw, Send,
   ShieldCheck, Cpu
 } from "lucide-react";
+import LeadScoreCard from "../components/LeadScoreCard";
+import RevenueForecastChart from "../components/RevenueForecastChart";
 
 const palette = {
   bg: "#0A0E1A",
@@ -352,6 +354,7 @@ export default function DashboardView({ onNavigate }) {
           </div>
           
           {/* AI Copilot Trigger */}
+            <LeadScoreCard />
           <button
             onClick={() => {
               setAiDrawerOpen(!aiDrawerOpen);
@@ -613,6 +616,8 @@ export default function DashboardView({ onNavigate }) {
           <KpiCard key={k.label} label={k.label} value={k.value} icon={k.icon} color={k.color} details={k.details} />
         ))}
       </div>
+
+        <RevenueForecastChart />
 
       {/* Collapsible Advanced Analytics Section */}
       <div className="rounded-2xl border border-brand-border bg-brand-surface/40 hover:bg-brand-surface/65 backdrop-blur-md transition-all duration-300">

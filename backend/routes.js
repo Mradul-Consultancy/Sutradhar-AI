@@ -3,6 +3,8 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const { verifyPassword, run, all, get } = require('./database');
 const { verifyToken } = require('./auth');
+const { computeLeadScore } = require('./services/leadScoring');
+const { getRevenueForecast } = require('./services/forecasting');
 
 // ==========================================
 // 1. PUBLIC AUTHENTICATION ENDPOINTS
@@ -1119,6 +1121,20 @@ router.post('/ai/copilot', async (req, res) => {
     res.status(500).json({ success: false, error: error.message });
   }
 });
+// ==========================================
+// 13. LEAD SCORING ENDPOINT
+// ==========================================
+router.post('/lead/score', async (req, res) => {
+  try {
+    const lead = req.body; // expects name, company, industry, revenue, employeeCount, engagementScore
+    const { score, rationale } = await computeLeadScore(lead);
+    res.json({ success: true, score, rationale });
+  } catch (error) {
+    console.error('Lead scoring error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 
 // Phase 1 Voice Note Transcription & Auto-Logging Endpoint
 router.post('/ai/voice-log', async (req, res) => {
@@ -1388,7 +1404,18 @@ router.get('/ai/config', async (req, res) => {
   }
 });
 
-router.post('/ai/config', async (req, res) => {
+router.post('/lead/score', async (req, res) => {
+  try {
+    const lead = req.body;
+    const result = await computeLeadScore(lead);
+    res.json({ success: true, ...result });
+  } catch (error) {
+    console.error('Lead scoring error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+
   try {
     const { provider, endpoint, model_name, is_airgapped } = req.body;
     const actor = req.user ? req.user.username : 'admin';
@@ -1408,6 +1435,16 @@ router.post('/ai/config', async (req, res) => {
     res.json({ success: true, message: 'AI Engine configurations updated successfully.' });
   } catch (error) {
     console.error('Update AI config error:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+router.get('/revenue/forecast', async (req, res) => {
+  try {
+    const data = await getRevenueForecast();
+    res.json({ success: true, forecast: data });
+  } catch (error) {
+    console.error('Revenue forecast error:', error);
     res.status(500).json({ success: false, error: error.message });
   }
 });
