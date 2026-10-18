@@ -581,7 +581,7 @@ export default function App() {
           <div className="flex items-center gap-2.5">
             <div className="w-3.5 h-3.5 rounded-full bg-[#2DD4BF] pulse-dot" />
             <div>
-              <h1 className="font-space font-bold text-md tracking-tight uppercase">Sutradhar AI</h1>
+              <span className="block font-space font-bold text-md tracking-tight uppercase">Sutradhar AI</span>
               <p className="text-[9px] text-[#7C8AA8] font-mono tracking-widest mt-0.5">AUTONOMOUS COMMAND</p>
             </div>
           </div>

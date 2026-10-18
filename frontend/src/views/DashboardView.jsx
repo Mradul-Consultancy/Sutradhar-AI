@@ -396,217 +396,233 @@ export default function DashboardView({ onNavigate }) {
         </div>
       </div>
 
-      {/* AI Copilot Interactive Banner / Drawer */}
+      {/* AI Copilot Side-Drawer (Overlay & Slide-over) */}
       {aiDrawerOpen && (
-        <div className="rounded-2xl border border-brand-teal/40 bg-brand-surface/90 backdrop-blur-xl p-5 shadow-[0_0_30px_rgba(45,212,191,0.08)] transition-all animate-fadeIn">
-          <div className="flex items-center justify-between border-b border-brand-border/60 pb-3 mb-4">
-            <div className="flex items-center gap-2.5">
-              <div className="p-2 rounded-xl bg-gradient-to-br from-teal-500/20 to-indigo-500/20 border border-brand-teal/40 text-brand-teal">
-                <BrainCircuit size={18} />
-              </div>
+        <div className="fixed inset-0 z-50 overflow-hidden">
+          {/* Backdrop overlay */}
+          <div 
+            className="fixed inset-0 bg-brand-bg/60 backdrop-blur-sm transition-opacity" 
+            onClick={() => setAiDrawerOpen(false)} 
+          />
+
+          <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
+            <div className="w-screen max-w-xl bg-brand-surface border-l border-brand-teal/30 shadow-[-10px_0_40px_rgba(45,212,191,0.12)] p-6 flex flex-col justify-between overflow-y-auto animate-fadeIn">
+              
               <div>
-                <div className="flex items-center gap-2">
-                  <h3 className="text-sm font-bold text-brand-text tracking-wide font-space">{aiResponse.agent}</h3>
-                  <span className="text-[9px] font-mono px-2 py-0.5 rounded-full bg-brand-teal/20 text-brand-teal border border-brand-teal/30">ACTIVE LOOP</span>
-                </div>
-                <p className="text-[11px] text-brand-textDim">Autonomous Multi-Agent Revenue &amp; SLA Copilot</p>
-              </div>
-            </div>
-            <button
-              onClick={() => setAiDrawerOpen(false)}
-              className="text-brand-textDim hover:text-brand-text text-sm p-1 rounded-lg border border-brand-border/50 hover:bg-brand-surfaceAlt"
-            >
-              ✕
-            </button>
-          </div>
-
-          <div className="bg-brand-surfaceAlt/70 rounded-xl p-4 border border-brand-border/80 mb-4">
-            <div className="flex items-start gap-3">
-              <Bot size={18} className="text-brand-teal mt-0.5 shrink-0" />
-              <div className="text-xs text-brand-text leading-relaxed font-sans">
-                {aiResponse.message}
-              </div>
-            </div>
-          </div>
-
-          {/* Quick Action Chips */}
-          <div className="flex flex-wrap gap-2 mb-4">
-            {aiResponse.suggestedActions?.map((act, idx) => (
-              <button
-                key={idx}
-                onClick={() => handleAskAi(act.actionType, act.label)}
-                disabled={aiLoading}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-brand-border bg-brand-surface hover:border-brand-teal/40 hover:bg-brand-teal/10 text-[11px] text-brand-textDim hover:text-brand-teal transition-all"
-              >
-                <Zap size={11} className="text-brand-teal" />
-                <span>{act.label}</span>
-              </button>
-            ))}
-          </div>
-
-          {/* Prompt Input Form */}
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              if (aiPrompt.trim()) handleAskAi(null, aiPrompt);
-            }}
-            className="flex items-center gap-2"
-          >
-            <input
-              type="text"
-              value={aiPrompt}
-              onChange={(e) => setAiPrompt(e.target.value)}
-              placeholder="Ask Sutradhar Agents (e.g., 'Summarize high-priority tickets' or 'Forecast Tata deal')..."
-              className="flex-1 bg-brand-surfaceAlt border border-brand-border rounded-xl px-4 py-2.5 text-xs text-brand-text placeholder-brand-textDim/60 focus:outline-none focus:border-brand-teal transition-colors"
-            />
-            <button
-              type="submit"
-              disabled={aiLoading || !aiPrompt.trim()}
-              className="flex items-center gap-1.5 px-4 py-2.5 bg-brand-teal hover:bg-brand-teal/90 text-brand-bg font-bold text-xs rounded-xl uppercase tracking-wider transition-all disabled:opacity-50"
-            >
-              {aiLoading ? <RefreshCw size={14} className="animate-spin" /> : <Send size={14} />}
-              <span>Dispatch</span>
-            </button>
-          </form>
-
-          {/* Phase 2: Predictive Deal Health Radar */}
-          <div className="mt-4 pt-4 border-t border-brand-border/60">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <Target size={13} className="text-brand-teal" />
-                <span className="text-[10px] font-mono uppercase tracking-wider text-brand-textDim font-bold">
-                  Predictive Deal Risk Radar (Drishti Model)
-                </span>
-              </div>
-              <button
-                onClick={fetchDealRadar}
-                disabled={radarLoading}
-                className="text-[10px] font-mono text-brand-teal hover:underline flex items-center gap-1"
-              >
-                <RefreshCw size={10} className={radarLoading ? "animate-spin" : ""} />
-                <span>Re-score Pipeline</span>
-              </button>
-            </div>
-
-            {dealRadar.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-48 overflow-y-auto pr-1">
-                {dealRadar.slice(0, 4).map((d) => (
-                  <div key={d.id} className="p-2.5 rounded-xl border border-brand-border bg-brand-surfaceAlt/60 flex items-center justify-between text-xs">
-                    <div className="truncate mr-2">
-                      <p className="font-semibold text-brand-text truncate">{d.title}</p>
-                      <p className="text-[10px] text-brand-textDim">{d.stage} • {d.days_open}d active</p>
+                {/* Drawer Header */}
+                <div className="flex items-center justify-between border-b border-brand-border/80 pb-4 mb-5">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2.5 rounded-xl bg-gradient-to-br from-teal-500/20 to-indigo-500/20 border border-brand-teal/40 text-brand-teal shadow-[0_0_15px_rgba(45,212,191,0.2)]">
+                      <BrainCircuit size={20} />
                     </div>
-                    <div className="text-right shrink-0">
-                      <span className={`px-2 py-0.5 rounded text-[9px] font-mono font-bold ${
-                        d.health === 'Critical' ? 'bg-brand-red/20 text-brand-red border border-brand-red/30' :
-                        d.health === 'Warning' ? 'bg-brand-warn/20 text-brand-warn border border-brand-warn/30' :
-                        'bg-brand-teal/20 text-brand-teal border border-brand-teal/30'
-                      }`}>
-                        {d.health} ({d.winProbability}%)
-                      </span>
-                      <p className="text-[10px] font-mono text-brand-textDim mt-0.5">₹{(d.value || 0).toLocaleString()}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-[11px] text-brand-textDim italic">Click "Re-score Pipeline" to evaluate dynamic win/loss matrices.</p>
-            )}
-          </div>
-
-          {/* Phase 3: Autonomous Follow-Up Review Queue (Human-In-The-Loop) */}
-          <div className="mt-4 pt-4 border-t border-brand-border/60">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <CheckCircle2 size={13} className="text-brand-indigo" />
-                <span className="text-[10px] font-mono uppercase tracking-wider text-brand-textDim font-bold">
-                  Human-In-The-Loop Autonomous Dispatch Queue
-                </span>
-              </div>
-              <button
-                onClick={fetchReviewQueue}
-                disabled={reviewLoading}
-                className="text-[10px] font-mono text-brand-indigo hover:underline flex items-center gap-1"
-              >
-                <RefreshCw size={10} className={reviewLoading ? "animate-spin" : ""} />
-                <span>Load Staged Actions</span>
-              </button>
-            </div>
-
-            {reviewQueue.length > 0 ? (
-              <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
-                {reviewQueue.map((item) => (
-                  <div key={item.id} className="p-2.5 rounded-xl border border-brand-border bg-brand-surfaceAlt/60 flex items-center justify-between text-xs gap-3">
-                    <div className="min-w-0 flex-1">
+                    <div>
                       <div className="flex items-center gap-2">
-                        <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-brand-indigo/20 text-brand-indigo font-bold">{item.agent}</span>
-                        <span className="font-semibold text-brand-text truncate">{item.recipient}</span>
+                        <h3 className="text-sm font-bold text-brand-text tracking-wide font-space">{aiResponse.agent}</h3>
+                        <span className="text-[9px] font-mono px-2 py-0.5 rounded-full bg-brand-teal/20 text-brand-teal border border-brand-teal/30">ACTIVE LOOP</span>
                       </div>
-                      <p className="text-[11px] text-brand-textDim mt-0.5">{item.proposed_action}</p>
-                    </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <span className="text-[10px] font-mono text-brand-teal">{item.confidence_score}% Conf.</span>
-                      <button
-                        onClick={() => handleApproveReview(item.id)}
-                        className="px-2.5 py-1 bg-brand-teal text-brand-bg font-bold text-[10px] rounded-lg hover:opacity-90 transition-opacity"
-                      >
-                        Approve &amp; Send
-                      </button>
+                      <p className="text-[11px] text-brand-textDim">Autonomous Multi-Agent Revenue &amp; SLA Copilot</p>
                     </div>
                   </div>
-                ))}
-              </div>
-            ) : (
-              <p className="text-[11px] text-brand-textDim italic">Click "Load Staged Actions" to review agent-recommended customer outreach.</p>
-            )}
-          </div>
-
-          {/* Phase 4: Enterprise Hardening & Local AI Status */}
-          <div className="mt-4 pt-4 border-t border-brand-border/60">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <ShieldCheck size={13} className="text-brand-teal" />
-                <span className="text-[10px] font-mono uppercase tracking-wider text-brand-textDim font-bold">
-                  Enterprise Hardening &amp; Compliance Audit Trail (SOC2 / GDPR)
-                </span>
-              </div>
-              <button
-                onClick={fetchAuditLogs}
-                disabled={auditLoading}
-                className="text-[10px] font-mono text-brand-teal hover:underline flex items-center gap-1"
-              >
-                <RefreshCw size={10} className={auditLoading ? "animate-spin" : ""} />
-                <span>Fetch Tamper-Proof Logs</span>
-              </button>
-            </div>
-
-            <div className="p-2.5 rounded-xl border border-brand-border bg-brand-surfaceAlt/60 mb-2 flex items-center justify-between text-xs">
-              <div className="flex items-center gap-2">
-                <Cpu size={14} className="text-brand-indigo" />
-                <div>
-                  <span className="font-semibold text-brand-text">Local Air-Gapped AI Engine</span>
-                  <p className="text-[10px] text-brand-textDim">Provider: Ollama (mistral:instruct) • Zero Data Egress</p>
+                  <button
+                    onClick={() => setAiDrawerOpen(false)}
+                    className="text-brand-textDim hover:text-brand-text p-1.5 rounded-xl border border-brand-border/60 hover:bg-brand-surfaceAlt transition-colors"
+                  >
+                    ✕
+                  </button>
                 </div>
-              </div>
-              <span className="px-2 py-0.5 rounded text-[9px] font-mono font-bold bg-brand-teal/20 text-brand-teal border border-brand-teal/30">
-                100% PRIVATE
-              </span>
-            </div>
 
-            {auditLogs.length > 0 ? (
-              <div className="space-y-1.5 max-h-36 overflow-y-auto pr-1">
-                {auditLogs.slice(0, 3).map((log) => (
-                  <div key={log.id} className="p-2 rounded-lg border border-brand-border/60 bg-brand-surface/80 flex items-center justify-between text-[11px] font-mono">
-                    <span className="text-brand-textDim">{log.timestamp.slice(11, 19)}</span>
-                    <span className="text-brand-indigo font-bold">{log.actor}</span>
-                    <span className="text-brand-text truncate max-w-[240px]">{log.action}</span>
-                    <span className="text-brand-teal">{log.ip_address}</span>
+                {/* Agent Response Card */}
+                <div className="bg-brand-surfaceAlt/80 rounded-2xl p-4 border border-brand-border/80 mb-4 shadow-sm">
+                  <div className="flex items-start gap-3">
+                    <Bot size={18} className="text-brand-teal mt-0.5 shrink-0" />
+                    <div className="text-xs text-brand-text leading-relaxed font-sans">
+                      {aiResponse.message}
+                    </div>
                   </div>
-                ))}
+                </div>
+
+                {/* Quick Action Chips */}
+                <div className="flex flex-wrap gap-2 mb-5">
+                  {aiResponse.suggestedActions?.map((act, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => handleAskAi(act.actionType, act.label)}
+                      disabled={aiLoading}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-brand-border bg-brand-surfaceAlt/60 hover:border-brand-teal/50 hover:bg-brand-teal/10 text-[11px] text-brand-textDim hover:text-brand-teal transition-all"
+                    >
+                      <Zap size={11} className="text-brand-teal" />
+                      <span>{act.label}</span>
+                    </button>
+                  ))}
+                </div>
+
+                {/* Prompt Input Form */}
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    if (aiPrompt.trim()) handleAskAi(null, aiPrompt);
+                  }}
+                  className="flex items-center gap-2 mb-6"
+                >
+                  <input
+                    type="text"
+                    value={aiPrompt}
+                    onChange={(e) => setAiPrompt(e.target.value)}
+                    placeholder="Ask Sutradhar Agents (e.g., 'Summarize high-priority tickets')..."
+                    className="flex-1 bg-brand-surfaceAlt border border-brand-border rounded-xl px-4 py-2.5 text-xs text-brand-text placeholder-brand-textDim/60 focus:outline-none focus:border-brand-teal transition-colors"
+                  />
+                  <button
+                    type="submit"
+                    disabled={aiLoading || !aiPrompt.trim()}
+                    className="flex items-center gap-1.5 px-4 py-2.5 bg-brand-teal hover:bg-brand-teal/90 text-brand-bg font-bold text-xs rounded-xl uppercase tracking-wider transition-all disabled:opacity-50 shadow-md"
+                  >
+                    {aiLoading ? <RefreshCw size={14} className="animate-spin" /> : <Send size={14} />}
+                    <span>Dispatch</span>
+                  </button>
+                </form>
+
+                {/* Predictive Deal Health Radar */}
+                <div className="pt-4 border-t border-brand-border/60">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <Target size={13} className="text-brand-teal" />
+                      <span className="text-[10px] font-mono uppercase tracking-wider text-brand-textDim font-bold">
+                        Predictive Deal Risk Radar (Drishti Model)
+                      </span>
+                    </div>
+                    <button
+                      onClick={fetchDealRadar}
+                      disabled={radarLoading}
+                      className="text-[10px] font-mono text-brand-teal hover:underline flex items-center gap-1"
+                    >
+                      <RefreshCw size={10} className={radarLoading ? "animate-spin" : ""} />
+                      <span>Re-score Pipeline</span>
+                    </button>
+                  </div>
+
+                  {dealRadar.length > 0 ? (
+                    <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+                      {dealRadar.slice(0, 4).map((d) => (
+                        <div key={d.id} className="p-2.5 rounded-xl border border-brand-border bg-brand-surfaceAlt/60 flex items-center justify-between text-xs">
+                          <div className="truncate mr-2">
+                            <p className="font-semibold text-brand-text truncate">{d.title}</p>
+                            <p className="text-[10px] text-brand-textDim">{d.stage} • {d.days_open}d active</p>
+                          </div>
+                          <div className="text-right shrink-0">
+                            <span className={`px-2 py-0.5 rounded text-[9px] font-mono font-bold ${
+                              d.health === 'Critical' ? 'bg-brand-red/20 text-brand-red border border-brand-red/30' :
+                              d.health === 'Warning' ? 'bg-brand-warn/20 text-brand-warn border border-brand-warn/30' :
+                              'bg-brand-teal/20 text-brand-teal border border-brand-teal/30'
+                            }`}>
+                              {d.health} ({d.winProbability}%)
+                            </span>
+                            <p className="text-[10px] font-mono text-brand-textDim mt-0.5">₹{(d.value || 0).toLocaleString()}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-[11px] text-brand-textDim italic">Click "Re-score Pipeline" to evaluate dynamic win/loss matrices.</p>
+                  )}
+                </div>
+
+                {/* HITL Autonomous Review Queue */}
+                <div className="mt-4 pt-4 border-t border-brand-border/60">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 size={13} className="text-brand-indigo" />
+                      <span className="text-[10px] font-mono uppercase tracking-wider text-brand-textDim font-bold">
+                        Human-In-The-Loop Autonomous Dispatch Queue
+                      </span>
+                    </div>
+                    <button
+                      onClick={fetchReviewQueue}
+                      disabled={reviewLoading}
+                      className="text-[10px] font-mono text-brand-indigo hover:underline flex items-center gap-1"
+                    >
+                      <RefreshCw size={10} className={reviewLoading ? "animate-spin" : ""} />
+                      <span>Load Staged Actions</span>
+                    </button>
+                  </div>
+
+                  {reviewQueue.length > 0 ? (
+                    <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+                      {reviewQueue.map((item) => (
+                        <div key={item.id} className="p-2.5 rounded-xl border border-brand-border bg-brand-surfaceAlt/60 flex items-center justify-between text-xs gap-3">
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-2">
+                              <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-brand-indigo/20 text-brand-indigo font-bold">{item.agent}</span>
+                              <span className="font-semibold text-brand-text truncate">{item.recipient}</span>
+                            </div>
+                            <p className="text-[11px] text-brand-textDim mt-0.5">{item.proposed_action}</p>
+                          </div>
+                          <div className="flex items-center gap-2 shrink-0">
+                            <span className="text-[10px] font-mono text-brand-teal">{item.confidence_score}% Conf.</span>
+                            <button
+                              onClick={() => handleApproveReview(item.id)}
+                              className="px-2.5 py-1 bg-brand-teal text-brand-bg font-bold text-[10px] rounded-lg hover:opacity-90 transition-opacity"
+                            >
+                              Approve &amp; Send
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-[11px] text-brand-textDim italic">Click "Load Staged Actions" to review agent-recommended customer outreach.</p>
+                  )}
+                </div>
+
+                {/* Enterprise Hardening & Local AI Status */}
+                <div className="mt-4 pt-4 border-t border-brand-border/60">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <ShieldCheck size={13} className="text-brand-teal" />
+                      <span className="text-[10px] font-mono uppercase tracking-wider text-brand-textDim font-bold">
+                        Enterprise Hardening &amp; Compliance Audit Trail
+                      </span>
+                    </div>
+                    <button
+                      onClick={fetchAuditLogs}
+                      disabled={auditLoading}
+                      className="text-[10px] font-mono text-brand-teal hover:underline flex items-center gap-1"
+                    >
+                      <RefreshCw size={10} className={auditLoading ? "animate-spin" : ""} />
+                      <span>Fetch Tamper-Proof Logs</span>
+                    </button>
+                  </div>
+
+                  <div className="p-2.5 rounded-xl border border-brand-border bg-brand-surfaceAlt/60 mb-2 flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-2">
+                      <Cpu size={14} className="text-brand-indigo" />
+                      <div>
+                        <span className="font-semibold text-brand-text">Local Air-Gapped AI Engine</span>
+                        <p className="text-[10px] text-brand-textDim">Provider: Ollama (mistral:instruct) • Zero Data Egress</p>
+                      </div>
+                    </div>
+                    <span className="px-2 py-0.5 rounded text-[9px] font-mono font-bold bg-brand-teal/20 text-brand-teal border border-brand-teal/30">
+                      100% PRIVATE
+                    </span>
+                  </div>
+
+                  {auditLogs.length > 0 ? (
+                    <div className="space-y-1.5 max-h-36 overflow-y-auto pr-1">
+                      {auditLogs.slice(0, 3).map((log) => (
+                        <div key={log.id} className="p-2 rounded-lg border border-brand-border/60 bg-brand-surface/80 flex items-center justify-between text-[11px] font-mono">
+                          <span className="text-brand-textDim">{log.timestamp.slice(11, 19)}</span>
+                          <span className="text-brand-indigo font-bold">{log.actor}</span>
+                          <span className="text-brand-text truncate max-w-[200px]">{log.action}</span>
+                          <span className="text-brand-teal">{log.ip_address}</span>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-[11px] text-brand-textDim italic">Click "Fetch Tamper-Proof Logs" to audit system operations.</p>
+                  )}
+                </div>
+
               </div>
-            ) : (
-              <p className="text-[11px] text-brand-textDim italic">Click "Fetch Tamper-Proof Logs" to audit system operations.</p>
-            )}
+            </div>
           </div>
         </div>
       )}
