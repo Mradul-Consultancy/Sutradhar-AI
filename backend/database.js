@@ -2,7 +2,7 @@ const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const crypto = require('crypto');
 
-const dbPath = path.join(__dirname, 'crm.db');
+const dbPath = process.env.DB_PATH || path.join(__dirname, 'crm.db');
 
 const HASH_ITERATIONS = 210000;
 

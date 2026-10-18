@@ -1,0 +1,47 @@
+services:
+  # -------------------------------------------------------------
+  # Sutradhar AI - Backend Web Service
+  # -------------------------------------------------------------
+  - type: web
+    name: sutradhar-backend
+    runtime: node
+    rootDir: backend
+    plan: free
+    region: oregon
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: JWT_SECRET
+        generateValue: true
+      - key: SEED_MOCK_DATA
+        value: "true"
+      - key: CORS_ORIGIN
+        value: "*"
+    autoDeploy: true
+
+  # -------------------------------------------------------------
+  # Sutradhar AI - Frontend Static Site
+  # -------------------------------------------------------------
+  - type: web
+    name: sutradhar-frontend
+    runtime: static
+    rootDir: frontend
+    plan: free
+    region: oregon
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_BASE_URL
+        fromService:
+          type: web
+          name: sutradhar-backend
+          property: host
+    autoDeploy: true
