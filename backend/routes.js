@@ -1415,7 +1415,7 @@ router.post('/lead/score', async (req, res) => {
   }
 });
 
-
+router.post('/ai/config', async (req, res) => {
   try {
     const { provider, endpoint, model_name, is_airgapped } = req.body;
     const actor = req.user ? req.user.username : 'admin';
