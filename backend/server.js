@@ -63,9 +63,7 @@ app.use((err, req, res, next) => {
   console.error('Unhandled Application Error:', err);
   res.status(err.status || 500).json({
     success: false,
-    error: process.env.NODE_ENV === 'production' 
-      ? 'An unexpected database or application error occurred.' 
-      : err.message
+    error: err.message || 'An unexpected database or application error occurred.'
   });
 });
 

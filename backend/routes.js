@@ -10,7 +10,7 @@ const { getRevenueForecast } = require('./services/forecasting');
 // 1. PUBLIC AUTHENTICATION ENDPOINTS
 // ==========================================
 
-router.post('/login', async (req, res) => {
+router.post('/login', async (req, res, next) => {
   const { username, password } = req.body;
   if (!username || !password) {
     return res.status(400).json({ success: false, error: 'Username and password are required' });
@@ -38,7 +38,7 @@ router.post('/login', async (req, res) => {
     }
   } catch (error) {
     console.error('Login error:', error);
-    res.status(500).json({ success: false, error: error.message });
+    next(error);
   }
 });
 
