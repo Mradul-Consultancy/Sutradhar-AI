@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="frontend/public/logo_icon.png" alt="Sutradhar AI Logo" width="120" height="120" />
+  <img src="assets/sutradhar_ai_logo.jpg" alt="Sutradhar AI Logo" width="160" />
 </p>
 
 <h1 align="center">Sutradhar AI</h1>
@@ -24,7 +24,7 @@
 </p>
 
 <p align="center">
-  A premium, glassmorphic dark-theme <strong>AI-powered CRM & Revenue Command Center</strong> engineered for businesses that demand<br/>
+  A premium, glassmorphic dark-theme <strong>AI-powered CRM &amp; Revenue Command Center</strong> engineered for businesses that demand<br/>
   <strong>100% data sovereignty</strong>, <strong>zero SaaS fees</strong>, <strong>autonomous AI agents</strong>, and <strong>offline-first capabilities</strong>.
 </p>
 
@@ -45,14 +45,14 @@
 - [Why Sutradhar AI?](#-why-sutradhar-ai)
 - [Features](#-features)
 - [AI Agents & Autonomous Loop](#-ai-agents--autonomous-loop)
-- [Screenshots](#-dashboard-overview)
-- [Architecture](#-high-level-architecture--agentic-loop)
+- [High-Level Architecture](#-high-level-architecture--agentic-loop)
 - [Quick Start](#-quick-start)
 - [Project Structure](#-project-structure)
 - [API Reference](#-api-reference)
 - [Mobile App (Android)](#-mobile-app-android)
 - [Deployment](#-deployment)
 - [Environment Variables](#-environment-variables)
+- [Database Schema](#-database-schema)
 - [Roadmap](#-roadmap)
 - [Contributing](#-contributing)
 - [License](#-license)
@@ -85,7 +85,7 @@ Live KPI dashboard with interactive **Recharts** visualizations showing:
 - Deal Stage Distribution (Pie Charts)
 - Activity Timeline with Type Breakdown
 
-### 🤖 AI-Powered Intelligence (NEW)
+### 🤖 AI-Powered Intelligence
 - **Lead Scoring Engine** — `POST /api/lead/score` evaluates leads with a weighted scoring model
 - **Revenue Forecasting** — `GET /api/revenue/forecast` provides 6-month revenue predictions (plug-in-ready for ML models)
 - **Predictive Deal Risk Radar (Drishti)** — Real-time deal health monitoring with win-probability scores
@@ -227,7 +227,7 @@ graph TD
 ### Tech Stack
 
 | Layer | Technology | Purpose |
-|-------|-----------|---------|
+|-------|-----------|---------:|
 | **Frontend** | React 19, Vite 8, Recharts, Lucide Icons, TailwindCSS | UI components, charts, icons, styling |
 | **Backend** | Node.js, Express 4, JWT | REST API server, authentication |
 | **AI Services** | Lead Scoring, Revenue Forecasting, Deal Radar | Plug-in-ready stubs for ML/LLM models |
@@ -286,7 +286,7 @@ Sutradhar-AI/
 │   ├── routes.js                  # All REST API route handlers
 │   ├── 📁 services/               # AI service modules
 │   │   ├── leadScoring.js         # Lead scoring engine (weighted model)
-│   │   └── forecasting.js        # Revenue forecasting service (6-month)
+│   │   └── forecasting.js         # Revenue forecasting service (6-month)
 │   ├── auth.js                    # JWT token verification middleware
 │   ├── .env                       # Environment variables (JWT secret, ports)
 │   ├── reset_db.js                # Database reset utility script
@@ -320,7 +320,7 @@ Sutradhar-AI/
 │   │   ├── logo_icon.png          # App icon (192x192 & 512x512)
 │   │   ├── favicon.svg            # Browser tab icon
 │   │   ├── app-release.apk        # Signed Android APK (3.66 MB)
-│   │   └── apk_qr.png            # QR code for APK download
+│   │   └── apk_qr.png             # QR code for APK download
 │   └── vercel.json                # Vercel deployment configuration
 │
 ├── 📁 android/                    # Capacitor Android native project
@@ -330,8 +330,11 @@ Sutradhar-AI/
 │   ├── gradlew / gradlew.bat      # Gradle wrapper scripts
 │   └── ...                        # Standard Android project files
 │
+├── 📁 assets/
+│   └── sutradhar_ai_logo.jpg      # Official project logo
+│
 ├── 📁 docs/
-│   └── 📁 images/                 # Documentation images & screenshots
+│   └── 📁 images/
 │       └── dashboard_overview.jpg # Dashboard overview screenshot
 │
 ├── capacitor.config.json          # Capacitor configuration
@@ -518,6 +521,9 @@ JWT_SECRET=your_super_secret_key_here
 
 # Database Seeding (set to 'false' in production)
 SEED_MOCK_DATA=true
+
+# Node Environment
+NODE_ENV=development
 ```
 
 | Variable | Default | Description |
@@ -687,7 +693,7 @@ copies or substantial portions of the Software.
 ---
 
 <p align="center">
-  <strong>Built with ❤️ by Mradul Consultancy — Sutradhar AI Team</strong>
-  <br/>
+  <img src="assets/sutradhar_ai_logo.jpg" alt="Sutradhar AI" width="64" /><br/>
+  <strong>Built with ❤️ by Mradul Consultancy — Sutradhar AI Team</strong><br/>
   <sub>If you found this project useful, please consider giving it a ⭐</sub>
 </p>

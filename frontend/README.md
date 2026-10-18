@@ -1,16 +1,57 @@
-# React + Vite
+# 🎉 Sutradhar AI Frontend (React + Vite)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<p align="left">
+  <img src="../assets/sutradhar_ai_logo.jpg" alt="Sutradhar AI Logo" width="140" />
+</p>
 
-Currently, two official plugins are available:
+A **premium glass-morphic dark-theme** single-page application that powers the **Revenue Command Center**. It connects to the Node/Express backend and provides real-time KPI dashboards, AI Copilot drawer, and full CRUD interfaces for contacts, companies, deals, activities, and tickets.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## 🚀 Quick Start (Frontend Only)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```bash
+# From the repository root
+cd frontend
+npm install          # install dependencies
+npm run dev          # starts Vite dev server at http://localhost:5173
+```
 
-## Expanding the ESLint configuration
+The frontend expects the backend API at `http://localhost:3000/api`. Adjust `VITE_API_BASE_URL` in `vite.config.js` if needed.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## 📂 Project Highlights
+
+- **React 19** with Vite 8 for lightning‑fast HMR.
+- **Recharts** visualizations (KPI cards, revenue‑forecast area chart, deal‑risk radar).
+- **Lucide icons** and **TailwindCSS** for a sleek glass‑morphic UI.
+- **AI Copilot Drawer** – a conversational side panel powered by the backend AI agents.
+- **PWA support** – installable on desktop, tablet, or mobile.
+- **Capacitor integration** – builds native Android APKs from the same codebase.
+
+---
+
+## 📖 Further Documentation
+
+For the full project overview, architecture diagram, API reference, and deployment guides, see the **main README** at the repository root:
+
+[../README.md](../README.md)
+
+---
+
+## 🛠️ Development Tips
+
+- Run the root `npm run dev` script to launch **both** the frontend (Vite) and backend (Express) simultaneously.
+- Use `npm run lint` to lint the codebase with ESLint.
+- To build a production bundle, run `npm run build`.
+
+---
+
+## 🤝 Contributing
+
+Feel free to open issues or submit pull requests. Follow the contribution guidelines in the main README.
+
+---
+
+*Built with ❤️ by the Sutradhar AI Team*
