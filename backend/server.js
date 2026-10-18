@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 const { initDatabase } = require('./database');
 const routes = require('./routes');
 
@@ -31,15 +32,29 @@ app.use(express.urlencoded({ extended: true }));
 // Wire api routes
 app.use('/api', routes);
 
-// Serve static assets if in production (future support)
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../frontend/dist')));
+// Serve frontend build if dist folder exists, otherwise return API status
+const frontendDist = path.join(__dirname, '../frontend/dist');
+const indexHtml = path.join(frontendDist, 'index.html');
+
+if (fs.existsSync(indexHtml)) {
+  app.use(express.static(frontendDist));
   app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
+    res.sendFile(indexHtml);
   });
 } else {
   app.get('/', (req, res) => {
-    res.send('CRM backend is running. API endpoints at /api/...');
+    res.json({
+      status: 'online',
+      name: 'Sutradhar AI Backend API',
+      message: 'CRM API is active and healthy.',
+      endpoints: {
+        dashboard: '/api/dashboard',
+        contacts: '/api/contacts',
+        companies: '/api/companies',
+        deals: '/api/deals',
+        tickets: '/api/tickets'
+      }
+    });
   });
 }
 
