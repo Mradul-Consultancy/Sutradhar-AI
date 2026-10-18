@@ -6,7 +6,11 @@ const { initDatabase } = require('./database');
 const routes = require('./routes');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+let parsedPort = parseInt(process.env.PORT, 10);
+if (isNaN(parsedPort) || parsedPort < 1 || parsedPort > 65535) {
+  parsedPort = 3000;
+}
+const PORT = parsedPort;
 
 // Enable CORS using configuration or defaults
 const allowedOrigins = process.env.CORS_ORIGIN 
