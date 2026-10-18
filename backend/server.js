@@ -7,8 +7,11 @@ const routes = require('./routes');
 
 const app = express();
 let parsedPort = parseInt(process.env.PORT, 10);
-if (isNaN(parsedPort) || parsedPort < 1 || parsedPort > 65535) {
-  parsedPort = 3000;
+// If PORT was accidentally set to 100000 or out of valid TCP range [1, 65535], auto-correct it
+if (parsedPort === 100000) {
+  parsedPort = 10000;
+} else if (isNaN(parsedPort) || parsedPort < 1 || parsedPort > 65535) {
+  parsedPort = process.env.RENDER ? 10000 : 3000;
 }
 const PORT = parsedPort;
 
