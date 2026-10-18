@@ -3,7 +3,14 @@
 // Expects a lead object with fields: name, company, industry, revenue, employeeCount, engagementScore (0‑100).
 // Returns a score (0‑100) and a brief rationale string.
 
-const { getGeminiResponse } = require('../utils/gemini'); // assume a generic wrapper exists
+let getGeminiResponse = null;
+try {
+  const geminiUtil = require('../utils/gemini');
+  getGeminiResponse = geminiUtil.getGeminiResponse;
+} catch (err) {
+  // Optional LLM module not installed or not present; fallback to deterministic rules
+  getGeminiResponse = null;
+}
 
 /**
  * Compute a lead score.
