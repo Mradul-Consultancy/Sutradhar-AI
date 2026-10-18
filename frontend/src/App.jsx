@@ -607,14 +607,17 @@ export default function App() {
               <button
                 key={item.id}
                 onClick={() => handleNavigate(item.id)}
-                className={`w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl text-xs font-semibold transition-all duration-200 group ${
+                className={`w-full flex items-center gap-3.5 px-4 py-3 rounded-xl text-xs font-semibold transition-all duration-200 relative group ${
                   isActive 
-                    ? "bg-[#2DD4BF] text-[#0A0E1A] shadow-lg shadow-[#2DD4BF]/10 font-bold" 
-                    : "text-[#7C8AA8] hover:text-[#EAF0FB] hover:bg-[#1F2A40]/40"
+                    ? "bg-[#2DD4BF]/15 text-[#2DD4BF] border border-[#2DD4BF]/30 shadow-[0_0_15px_rgba(45,212,191,0.1)] font-bold" 
+                    : "text-[#7C8AA8] hover:text-[#EAF0FB] hover:bg-[#1F2A40]/50 border border-transparent"
                 }`}
               >
+                {isActive && (
+                  <span className="absolute left-0 top-2 bottom-2 w-1 bg-[#2DD4BF] rounded-r-full shadow-[0_0_8px_#2DD4BF]" />
+                )}
                 <Icon size={16} className={`transition-transform duration-200 group-hover:scale-110 ${
-                  isActive ? "text-[#0A0E1A]" : "text-[#7C8AA8] group-hover:text-[#2DD4BF]"
+                  isActive ? "text-[#2DD4BF]" : "text-[#7C8AA8] group-hover:text-[#2DD4BF]"
                 }`} />
                 {item.label}
               </button>

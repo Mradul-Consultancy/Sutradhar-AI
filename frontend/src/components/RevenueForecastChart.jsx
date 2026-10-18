@@ -29,14 +29,14 @@ export default function RevenueForecastChart() {
               <stop offset="95%" stopColor="#818CF8" stopOpacity={0} />
             </linearGradient>
           </defs>
-          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-          <XAxis dataKey="month" stroke="#EAF0FB" />
-          <YAxis tickFormatter={value => `$${(value / 1000).toFixed(0)}k`} stroke="#EAF0FB" />
+          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.08)" />
+          <XAxis dataKey="month" stroke="#7C8AA8" tick={{ fontSize: 11 }} />
+          <YAxis tickFormatter={value => `₹${(value / 1000).toFixed(0)}k`} stroke="#7C8AA8" tick={{ fontSize: 11 }} />
           <Tooltip
-            contentStyle={{ backgroundColor: "#0E1422", border: "1px solid #1F2A40", color: "#EAF0FB" }}
-            formatter={val => `$${val.toLocaleString()}`}
+            contentStyle={{ backgroundColor: "#0E1422", border: "1px solid #1F2A40", borderRadius: "8px", color: "#EAF0FB", fontSize: "12px" }}
+            formatter={val => [`₹${val.toLocaleString("en-IN")}`, "Forecast"]}
           />
-          <Area type="monotone" dataKey="forecast" stroke="#818CF8" fillOpacity={1} fill="url(#colorForecast)" />
+          <Area type="monotone" dataKey="forecast" stroke="#818CF8" strokeWidth={2} fillOpacity={1} fill="url(#colorForecast)" />
         </AreaChart>
       </ResponsiveContainer>
     </div>

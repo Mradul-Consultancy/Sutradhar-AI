@@ -40,21 +40,22 @@ const fmtMoney = (n) => {
 function KpiCard({ label, value, icon: Icon, color, details }) {
   return (
     <div
-      className="flex flex-col gap-3 rounded-2xl p-5 border bg-brand-surface/65 backdrop-blur-md border-brand-border hover:border-brand-teal/30 hover:shadow-[0_0_20px_rgba(45,212,191,0.03)] hover:translate-y-[-2px] transition-all duration-300"
+      className="flex flex-col justify-between gap-3 rounded-2xl p-5 border bg-brand-surface/80 backdrop-blur-xl border-brand-border/80 hover:border-brand-teal/40 hover:shadow-[0_4px_25px_rgba(45,212,191,0.08)] hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden group"
     >
+      <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-brand-teal/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       <div className="flex items-center justify-between">
-        <span className="text-[10px] font-bold uppercase tracking-wider text-brand-textDim">
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-brand-textDim/90 font-mono">
           {label}
         </span>
-        <div className="rounded-lg p-1.5 bg-brand-surfaceAlt/60 border border-brand-border">
-          <Icon size={16} style={{ color }} strokeWidth={2} />
+        <div className="rounded-xl p-2 bg-brand-surfaceAlt/80 border border-brand-border/60 group-hover:border-brand-teal/30 transition-colors">
+          <Icon size={17} style={{ color }} strokeWidth={2.2} />
         </div>
       </div>
-      <div className="flex items-end justify-between mt-1">
-        <span className="text-2xl font-bold font-mono text-brand-text tracking-tight">
+      <div className="flex items-baseline justify-between mt-2 pt-2 border-t border-brand-border/30">
+        <span className="text-2xl font-bold font-mono text-brand-text tracking-tight tabular-nums">
           {value}
         </span>
-        <span className="text-[10px] text-brand-textDim font-medium font-mono bg-brand-surfaceAlt px-1.5 py-0.5 rounded border border-brand-border/60">
+        <span className="text-[10px] text-brand-textDim font-medium font-mono bg-brand-surfaceAlt/90 px-2 py-0.5 rounded-md border border-brand-border/60">
           {details}
         </span>
       </div>
