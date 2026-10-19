@@ -325,26 +325,34 @@ export default function DashboardView({ onNavigate }) {
         </div>
       )}
       {/* Header toolbar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-brand-border/60 pb-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-brand-border/60 pb-5">
         <div>
-          <h1 className="text-2xl md:text-3xl font-semibold tracking-tight text-brand-text font-space">
-            Revenue Command Center
-          </h1>
-          <p className="text-xs mt-1 text-brand-textDim">
-            Pipeline velocity, accounts health &amp; upcoming items
+          <div className="flex items-center gap-2.5">
+            <h1 className="text-xl md:text-2xl font-bold tracking-tight text-brand-text font-space">
+              Revenue Command Center
+            </h1>
+            <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border border-brand-teal/30 bg-brand-teal/10">
+              <span className="pulse-dot inline-block w-1.5 h-1.5 rounded-full bg-brand-teal" />
+              <span className="text-[10px] font-bold font-mono text-brand-teal tracking-wider">
+                LIVE
+              </span>
+            </div>
+          </div>
+          <p className="text-xs text-brand-textDim mt-1">
+            Real-time pipeline metrics, AI copilot intelligence &amp; account velocity
           </p>
         </div>
         
-        {/* Advanced Filters */}
-        <div className="flex flex-wrap items-center gap-3">
+        {/* Actions & Filters */}
+        <div className="flex flex-wrap items-center gap-2.5">
           {/* Owner filter dropdown */}
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-brand-border bg-brand-surfaceAlt/60">
-            <Filter size={12} className="text-brand-teal" />
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-brand-border bg-brand-surfaceAlt/70">
+            <Filter size={13} className="text-brand-teal" />
             <span className="text-[10px] font-mono text-brand-textDim uppercase">Owner:</span>
             <select
               value={selectedOwner}
               onChange={(e) => setSelectedOwner(e.target.value)}
-              className="bg-transparent text-xs text-brand-text font-semibold border-none outline-none focus:ring-0 cursor-pointer pr-4"
+              className="bg-transparent text-xs text-brand-text font-medium border-none outline-none focus:ring-0 cursor-pointer pr-2"
             >
               {owners.map(owner => (
                 <option key={owner} value={owner} className="bg-brand-surface text-brand-text">
@@ -354,45 +362,42 @@ export default function DashboardView({ onNavigate }) {
             </select>
           </div>
           
-          {/* AI Copilot Trigger */}
-            <LeadScoreCard />
-          <button
-            onClick={() => {
-              setAiDrawerOpen(!aiDrawerOpen);
-              if (!dealRadar.length) fetchDealRadar();
-            }}
-            className="flex items-center gap-2 px-4 py-1.5 bg-gradient-to-r from-teal-500 to-indigo-600 hover:from-teal-400 hover:to-indigo-500 text-white font-bold text-xs rounded-xl uppercase tracking-wider transition-all shadow-[0_0_15px_rgba(45,212,191,0.25)] active:scale-95"
-          >
-            <Sparkles size={14} className="animate-spin text-white" style={{ animationDuration: '4s' }} />
-            <span>AI Copilot</span>
-          </button>
+          {/* AI Lead Scorer Modal */}
+          <LeadScoreCard />
 
-          {/* Phase 1 Voice Note Trigger */}
+          {/* Voice Log (AI) Action */}
           <button
             onClick={handleSimulateVoiceLog}
             disabled={voiceRecording}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-brand-teal/40 bg-brand-surfaceAlt hover:bg-brand-teal/10 text-brand-teal text-xs font-mono transition-all disabled:opacity-50"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-brand-border bg-brand-surfaceAlt/70 hover:bg-brand-surfaceAlt hover:border-brand-teal/40 text-brand-text text-xs font-medium transition-all disabled:opacity-50"
             title="Simulate Voice Note auto-transcription and activity logging"
           >
-            <Zap size={13} className={voiceRecording ? "animate-bounce" : ""} />
-            <span>{voiceRecording ? "Transcribing..." : "Voice Log (AI)"}</span>
+            <Zap size={13} className={voiceRecording ? "animate-bounce text-brand-teal" : "text-brand-indigo"} />
+            <span>{voiceRecording ? "Transcribing..." : "Voice Log"}</span>
           </button>
 
           {/* WhatsApp Simulator trigger */}
           <button
             onClick={handleTriggerSimulator}
             disabled={simulating}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-brand-indigo hover:opacity-90 active:scale-[0.98] text-brand-bg font-bold text-xs rounded-xl uppercase tracking-wider transition-all disabled:opacity-50"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-brand-border bg-brand-surfaceAlt/70 hover:bg-brand-surfaceAlt hover:border-brand-teal/40 text-brand-text text-xs font-medium transition-all disabled:opacity-50"
+            title="Simulate incoming WhatsApp lead interaction"
           >
-            {simulating ? "Simulating..." : "Simulate WhatsApp"}
+            <MessageCircle size={13} className="text-emerald-400" />
+            <span>{simulating ? "Simulating..." : "Test WhatsApp"}</span>
           </button>
 
-          <div className="flex items-center gap-2 rounded-xl px-4 py-2 border border-brand-border bg-brand-surfaceAlt/30">
-            <span className="pulse-dot inline-block w-2 h-2 rounded-full bg-brand-teal" />
-            <span className="text-[10px] font-bold font-mono text-brand-textDim tracking-wider">
-              ONLINE
-            </span>
-          </div>
+          {/* AI Copilot Drawer Trigger */}
+          <button
+            onClick={() => {
+              setAiDrawerOpen(!aiDrawerOpen);
+              if (!dealRadar.length) fetchDealRadar();
+            }}
+            className="flex items-center gap-2 px-3.5 py-1.5 bg-gradient-to-r from-teal-500 to-indigo-600 hover:from-teal-400 hover:to-indigo-500 text-white font-bold text-xs rounded-xl uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(45,212,191,0.25)] active:scale-95"
+          >
+            <Sparkles size={13} className="animate-spin text-white" style={{ animationDuration: '4s' }} />
+            <span>AI Copilot</span>
+          </button>
         </div>
       </div>
 
