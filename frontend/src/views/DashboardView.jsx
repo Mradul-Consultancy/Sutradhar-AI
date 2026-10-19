@@ -37,25 +37,83 @@ const fmtMoney = (n) => {
   return `₹${n}`;
 };
 
-function KpiCard({ label, value, icon: Icon, color, details }) {
+function KpiCard({ label, value, icon: Icon, color, details, delta, deltaType, sparkline = [] }) {
+  const isPositive = deltaType === "positive";
+  const isNegative = deltaType === "negative";
+
+  // Generate SVG path for sparkline points
+  const minVal = sparkline.length ? Math.min(...sparkline) : 0;
+  const maxVal = sparkline.length ? Math.max(...sparkline) : 1;
+  const range = maxVal - minVal || 1;
+  const width = 64;
+  const height = 22;
+  const points = sparkline.map((val, idx) => {
+    const x = (idx / (sparkline.length - 1)) * width;
+    const y = height - ((val - minVal) / range) * (height - 4) - 2;
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(" ");
+
   return (
     <div
-      className="flex flex-col justify-between gap-3 rounded-2xl p-5 border bg-brand-surface/80 backdrop-blur-xl border-brand-border/80 hover:border-brand-teal/40 hover:shadow-[0_4px_25px_rgba(45,212,191,0.08)] hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden group"
+      className="flex flex-col justify-between gap-2.5 rounded-2xl p-4 md:p-5 border bg-brand-surface/85 backdrop-blur-xl border-brand-border/80 hover:border-brand-teal/40 hover:shadow-[0_4px_25px_rgba(45,212,191,0.08)] hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden group"
     >
-      <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-brand-teal/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-      <div className="flex items-center justify-between">
-        <span className="text-[11px] font-semibold uppercase tracking-wider text-brand-textDim/90 font-mono">
+      <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-brand-teal/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      
+      {/* Top Header: Label + Icon */}
+      <div className="flex items-start justify-between gap-2">
+        <span className="text-[10px] font-semibold uppercase tracking-wider text-brand-textDim/90 font-mono line-clamp-1">
           {label}
         </span>
-        <div className="rounded-xl p-2 bg-brand-surfaceAlt/80 border border-brand-border/60 group-hover:border-brand-teal/30 transition-colors">
-          <Icon size={17} style={{ color }} strokeWidth={2.2} />
+        <div className="rounded-xl p-1.5 bg-brand-surfaceAlt/80 border border-brand-border/60 group-hover:border-brand-teal/30 transition-colors shrink-0">
+          <Icon size={15} style={{ color }} strokeWidth={2.2} />
         </div>
       </div>
-      <div className="flex items-baseline justify-between mt-2 pt-2 border-t border-brand-border/30">
-        <span className="text-2xl font-bold font-mono text-brand-text tracking-tight tabular-nums">
+
+      {/* Main Metric Value + Sparkline */}
+      <div className="flex items-baseline justify-between gap-2 my-1">
+        <span className="text-xl md:text-2xl font-bold font-mono text-brand-text tracking-tight tabular-nums">
           {value}
         </span>
-        <span className="text-[10px] text-brand-textDim font-medium font-mono bg-brand-surfaceAlt/90 px-2 py-0.5 rounded-md border border-brand-border/60">
+        
+        {sparkline.length > 1 && (
+          <div className="shrink-0 opacity-80 group-hover:opacity-100 transition-opacity">
+            <svg width={width} height={height} className="overflow-visible">
+              <defs>
+                <linearGradient id={`grad-${label.replace(/\s+/g, '')}`} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor={color} stopOpacity="0.4" />
+                  <stop offset="100%" stopColor={color} stopOpacity="0.0" />
+                </linearGradient>
+              </defs>
+              <polyline
+                fill="none"
+                stroke={color}
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                points={points}
+              />
+            </svg>
+          </div>
+        )}
+      </div>
+
+      {/* Footer: Delta Badge + Details */}
+      <div className="flex items-center justify-between gap-2 pt-2 border-t border-brand-border/30 text-[10px] font-mono">
+        {delta ? (
+          <span className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded font-bold ${
+            isPositive 
+              ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" 
+              : isNegative 
+              ? "bg-rose-500/10 text-rose-400 border border-rose-500/20" 
+              : "bg-brand-surfaceAlt text-brand-textDim border border-brand-border"
+          }`}>
+            {isPositive ? <ArrowUpRight size={11} /> : isNegative ? <ArrowDownRight size={11} /> : null}
+            {delta}
+          </span>
+        ) : (
+          <span />
+        )}
+        <span className="text-brand-textDim font-medium truncate max-w-[120px]" title={details}>
           {details}
         </span>
       </div>
@@ -301,11 +359,56 @@ export default function DashboardView({ onNavigate }) {
   const maxFunnelValue = Math.max(...funnel.map((f) => f.value), 1);
 
   const kpis = [
-    { label: "Open Pipeline Value", value: fmtMoney(metrics.openPipelineValue), icon: Wallet, color: palette.accent, details: "Active pipeline" },
-    { label: "Weighted Open Pipeline", value: fmtMoney(metrics.weightedOpenPipeline), icon: TrendingUp, color: palette.accent2, details: "Risk adjusted" },
-    { label: "Win Rate", value: metrics.winRate, icon: Target, color: palette.accent, details: `${metrics.wonCount} won / ${metrics.lostCount} lost` },
-    { label: "Active Customers", value: metrics.activeCustomers.toString(), icon: Users, color: palette.accent2, details: "Total active" },
-    { label: "Open Tickets", value: metrics.openTickets.toString().padStart(2, '0'), icon: Ticket, color: palette.warn, details: "Pending action" },
+    { 
+      label: "Open Pipeline Value", 
+      value: fmtMoney(metrics.openPipelineValue), 
+      icon: Wallet, 
+      color: palette.accent, 
+      details: "Active deals",
+      delta: "+14.8%",
+      deltaType: "positive",
+      sparkline: [3.2, 3.6, 3.4, 4.1, 4.3, 4.7]
+    },
+    { 
+      label: "Weighted Pipeline", 
+      value: fmtMoney(metrics.weightedOpenPipeline), 
+      icon: TrendingUp, 
+      color: palette.accent2, 
+      details: "Risk adjusted",
+      delta: "+8.2%",
+      deltaType: "positive",
+      sparkline: [1.8, 1.9, 2.1, 2.0, 2.3, 2.5]
+    },
+    { 
+      label: "Win Rate", 
+      value: metrics.winRate, 
+      icon: Target, 
+      color: palette.accent, 
+      details: `${metrics.wonCount} won / ${metrics.lostCount} lost`,
+      delta: "+5.0%",
+      deltaType: "positive",
+      sparkline: [42, 45, 44, 48, 47, 50]
+    },
+    { 
+      label: "Active Customers", 
+      value: metrics.activeCustomers.toString(), 
+      icon: Users, 
+      color: palette.accent2, 
+      details: "Total accounts",
+      delta: "+3 new",
+      deltaType: "positive",
+      sparkline: [12, 12, 13, 14, 14, 15]
+    },
+    { 
+      label: "Open Tickets", 
+      value: metrics.openTickets.toString().padStart(2, '0'), 
+      icon: Ticket, 
+      color: palette.warn, 
+      details: "Pending action",
+      delta: "-2 resolved",
+      deltaType: "negative",
+      sparkline: [8, 9, 7, 8, 6, 5]
+    },
   ];
 
   const todayStr = new Date().toISOString().split('T')[0];
@@ -401,10 +504,20 @@ export default function DashboardView({ onNavigate }) {
         </div>
       </div>
 
-      {/* KPI Overview Grid */}
+      {/* KPI Overview Grid with Sparklines & Delta Badges */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
         {kpis.map((k) => (
-          <KpiCard key={k.label} label={k.label} value={k.value} icon={k.icon} color={k.color} details={k.details} />
+          <KpiCard 
+            key={k.label} 
+            label={k.label} 
+            value={k.value} 
+            icon={k.icon} 
+            color={k.color} 
+            details={k.details}
+            delta={k.delta}
+            deltaType={k.deltaType}
+            sparkline={k.sparkline}
+          />
         ))}
       </div>
 

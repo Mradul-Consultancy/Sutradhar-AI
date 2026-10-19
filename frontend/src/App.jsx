@@ -225,22 +225,36 @@ export default function App() {
   };
 
   const renderActiveView = () => {
+    let content;
     switch (activeTab) {
       case "dashboard":
-        return <DashboardView onNavigate={handleNavigate} />;
+        content = <DashboardView onNavigate={handleNavigate} />;
+        break;
       case "contacts":
-        return <ContactsView initialSelectedContactId={selectedContactId} />;
+        content = <ContactsView initialSelectedContactId={selectedContactId} />;
+        break;
       case "companies":
-        return <CompaniesView initialSearchQuery={viewSearchQuery} />;
+        content = <CompaniesView initialSearchQuery={viewSearchQuery} />;
+        break;
       case "pipeline":
-        return <PipelineView initialSearchQuery={viewSearchQuery} />;
+        content = <PipelineView initialSearchQuery={viewSearchQuery} />;
+        break;
       case "activities":
-        return <ActivitiesView />;
+        content = <ActivitiesView />;
+        break;
       case "tickets":
-        return <TicketsView initialSearchQuery={viewSearchQuery} />;
+        content = <TicketsView initialSearchQuery={viewSearchQuery} />;
+        break;
       default:
-        return <DashboardView onNavigate={handleNavigate} />;
+        content = <DashboardView onNavigate={handleNavigate} />;
+        break;
     }
+
+    return (
+      <div key={activeTab} className="view-transition">
+        {content}
+      </div>
+    );
   };
 
   const renderNotificationsDropdown = (isMobile = false) => {
